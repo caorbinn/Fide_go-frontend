@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1079461259471",
+    "project_id": "fide-go",
+    "storage_bucket": "fide-go.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079461259471:android:feba2a99c423977e152fba",
+        "android_client_info": {
+          "package_name": "com.example.fide_go"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBws5eXYdt-hq2jSZ8IjLtYe1AEtxM_oUA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
