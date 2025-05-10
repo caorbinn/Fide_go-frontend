@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fide_go</string>
+    <string name="copyright">Fide-go 2025</string>
+    <string name="ir_a_ajustes">Go to settings</string>
+    <string name="inicio_de_sesion">Login</string>
+    <string name="has_olvidado_tu_contrasena">You have forgotten your password</string>
+    <string name="correo">Email</string>
+    <string name="ejemplo_gmail_com">Example email@gmail.com</string>
+    <string name="se_ha_enviado_un_correo_para_restablecer_la_contrasena">An email has been sent to reset the password</string>
+    <string name="error_al_enviar_el_correo">Error sending the email</string>
+    <string name="recuperar_contrasena">Recover password</string>
+    <string name="crear_una_cuenta">Create an account</string>
+    <string name="nombre">Name</string>
+    <string name="apellido">Last name</string>
+    <string name="n_mero_de_tel_fono">Phone number</string>
+    <string name="contrase_a_m_n_6_caracteres">Password must be at least 6 characters</string>
+    <string name="registrate">Sign up</string>
+    <string name="ya_tienes_una_cuenta_inicia_sesion">Already have an account? Log in</string>
+    <string name="registro_con_exito">Successful registration</string>
+    <string name="hay_campos_vacios">There are empty fields</string>
+    <string name="no_tiene_cuenta_registrate">Don\'t have an account? Sign up here</string>
+</resources>

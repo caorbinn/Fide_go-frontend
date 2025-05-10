@@ -11,6 +11,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SocialNetworkService {
+    //CAMBIAR EDENTIFICA
+
     @PUT("edentifica/social_networks/update")
     suspend fun updateSocialNetwork(@Body socialNetwork: SocialNetwork): Response<Boolean>
 

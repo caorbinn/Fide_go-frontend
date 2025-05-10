@@ -15,6 +15,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ProfileService {
+
+    //CAMBIAR EDENTIFICA
+
     @GET("edentifica/profiles/get")
     suspend fun getProfileById(@Query("id") id: String): Response<Profile>
 

@@ -1,6 +1,5 @@
 package com.example.fide_go.data.model
 
-import com.google.android.gms.auth.api.credentials.IdentityProviders
 import com.google.gson.annotations.SerializedName
 import java.util.Arrays
 

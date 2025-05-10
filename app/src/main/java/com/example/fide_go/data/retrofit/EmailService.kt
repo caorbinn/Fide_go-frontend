@@ -10,6 +10,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface EmailService {
+
+    //CAMBIAR EDENTIFICA
     @PUT("edentifica/emails/update")
     suspend fun updateEmail(@Body email: Email): Response<Boolean>
 

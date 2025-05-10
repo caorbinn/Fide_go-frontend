@@ -9,7 +9,7 @@ sealed class AppScreen(val route: String){
 
     object ForgotPasswordScreen: AppScreen("forgot_password_screen")
 
-    object HomeScreen: AppScreen("home_screen")
+    /*object HomeScreen: AppScreen("home_screen")
 
     object ValidationOneScreen: AppScreen("validation_one_screen")
 
@@ -59,6 +59,6 @@ sealed class AppScreen(val route: String){
 
     object ValidationTwoSuccessScreen: AppScreen("validation_two_success")
 
-    object InfoValidationsScreen: AppScreen("info_validations")
+    object InfoValidationsScreen: AppScreen("info_validations")*/
 
 }

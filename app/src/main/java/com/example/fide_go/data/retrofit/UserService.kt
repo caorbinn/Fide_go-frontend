@@ -11,6 +11,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserService {
+    //CAMBIAR EDENTIFICA
+
     @GET("edentifica/users/get_by_email/{email}")// this is only for the email default of user
     suspend fun getByEmail(@Path("email") email: String): Response<User>
 
