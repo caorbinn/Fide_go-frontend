@@ -11,7 +11,7 @@ import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 object RetrofitApi {
-    private val  BASE_URL = "https://rnql1vx4-8080.uks1.devtunnels.ms/" //IMPORTANTE CAMBIAR DEPENDIENDO DEL WIFI O RED
+    private val  BASE_URL = "https://dkhmzp0m-8000.uks1.devtunnels.ms/" //IMPORTANTE CAMBIAR DEPENDIENDO DEL WIFI O RED
 
     // Configurar OkHttpClient con tiempos de espera personalizados
     val okHttpClient = OkHttpClient.Builder()

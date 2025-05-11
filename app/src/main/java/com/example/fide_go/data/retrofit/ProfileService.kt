@@ -18,19 +18,19 @@ interface ProfileService {
 
     //CAMBIAR EDENTIFICA
 
-    @GET("edentifica/profiles/get")
+    @GET("fide_go/profiles/get")
     suspend fun getProfileById(@Query("id") id: String): Response<Profile>
 
-    @PUT("edentifica/profiles/update")
+    @PUT("fide_go/profiles/update")
     suspend fun updateProfile(@Body profile: Profile): Response<Boolean>
 
-    @POST("edentifica/profiles/insert_email/{profileId}")
+    @POST("fide_go/profiles/insert_email/{profileId}")
     suspend fun insertEmail(@Path("profileId") profileId: String, @Body email: Email): Response<Boolean>
 
-    @POST("edentifica/profiles/insert_phone/{profileId}")
+    @POST("fide_go/profiles/insert_phone/{profileId}")
     suspend fun insertPhone(@Path("profileId") profileId: String, @Body phone: Phone): Response<Boolean>
 
-    @POST("edentifica/profiles/insert_social_network/{profileId}")
+    @POST("fide_go/profiles/insert_social_network/{profileId}")
     suspend fun insertSocialNetwork(@Path("profileId") profileId: String, @Body socialNetwork: SocialNetwork): Response<Boolean>
 
 }

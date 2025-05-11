@@ -122,14 +122,10 @@ fun HomeScreen(
         if(currentUser?.email != null) {// si el usuario existe en firebase y no existe en la base de datos lo inserto en la base de datos
             val userToInsert: User = User(
                 null,
-                null,
                 auth.getCurrentUser()?.displayName.toString(),
-                "",
                 Phone(null,auth.getCurrentUser()?.phoneNumber.toString(),false,null),
                 Email(null,auth.getCurrentUser()?.email.toString(),false,null),
-                Profile(null,"",auth.getCurrentUser()?.photoUrl.toString(),null),
-                null,
-                null
+                Profile(null,"",auth.getCurrentUser()?.photoUrl.toString(),null)
             )
             // Llama a la función del ViewModel para insertar el usuario y espera a que se complete
             LaunchedEffect (Unit) {
@@ -163,7 +159,7 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
-                            if(auth.getCurrentUser()?.email!=null && userState?.validations?.get(0)?.isValidated ==true ){
+                            if(auth.getCurrentUser()?.email!=null ){
                                 userState?.profile?.urlImageProfile?.let {
                                     ClickableProfileImage(
                                         navController = navController,
@@ -177,7 +173,7 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Spacer(modifier = Modifier.width(8.dp))
-                            (if(!currentUser?.displayName.isNullOrEmpty() || userState!=null) userState?.name?.let {
+                            (if(!currentUser?.displayName.isNullOrEmpty() || userState!=null) userState?.username?.let {
                                 stringResource(
                                     R.string.hola, it
                                 )

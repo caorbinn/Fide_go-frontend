@@ -12,15 +12,15 @@ import retrofit2.http.Query
 interface EmailService {
 
     //CAMBIAR EDENTIFICA
-    @PUT("edentifica/emails/update")
+    @PUT("fide_go/emails/update")
     suspend fun updateEmail(@Body email: Email): Response<Boolean>
 
-    @GET("edentifica/emails/get/{idprofile}")
+    @GET("fide_go/emails/get/{idprofile}")
     suspend fun listEmailsUser(@Path("idprofile") idprofile: String): Response<Set<Email>>
 
-    @GET("edentifica/emails/get")
+    @GET("fide_go/emails/get")
     suspend fun getEmail(@Query("id") id: String): Response<Email>
 
-    @DELETE("edentifica/emails/delete/{id}")
+    @DELETE("fide_go/emails/delete/{id}")
     suspend fun deleteEmail(@Path("id") id: String): Response<Boolean>
 }

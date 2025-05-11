@@ -80,8 +80,7 @@ fun RegisterScreen(
 ){
     //VARIABLES Y CONSTANTES
     val context = LocalContext.current
-    var name by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -175,23 +174,9 @@ fun RegisterScreen(
                             fontSize = TextSizes.Paragraph
                             )
                         },
-                    value = name,
+                    value = username,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onValueChange = { name = it }
-                )
-
-                //field last name
-                Spacer(modifier = Modifier.height(20.dp))
-                TextField(
-                    label = {
-                        Text(
-                            text = stringResource(R.string.apellido),
-                            fontSize = TextSizes.Paragraph
-                            )
-                        },
-                    value = lastName,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onValueChange = { lastName = it }
+                    onValueChange = { username = it }
                 )
 
                 //field phone
@@ -246,7 +231,7 @@ fun RegisterScreen(
                         onClick = {
                             scope.launch {
 
-                                signUp(name, lastName, phone, email, password, auth, context, navController,vmUsers)
+                                signUp(username, phone, email, password, auth, context, navController,vmUsers)
                             }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
@@ -281,8 +266,7 @@ fun RegisterScreen(
 }
 
 private suspend fun signUp(
-    name: String,
-    lastName: String,
+    username: String,
     phone: String,
     email: String,
     password: String,
@@ -291,17 +275,13 @@ private suspend fun signUp(
     navController: NavController,
     vmUsers: UsersViewModel
 ) {
-    if(name.isNotEmpty() && lastName.isNotEmpty() && phone.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()){
+    if(username.isNotEmpty() && phone.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()){
         val userToInsert: User = User(
             null,
-            null,
-            name,
-            lastName,
+            username,
             Phone(null,phone,null,null),
             Email(null,email,null,null),
-            Profile(null,"","",null),
-            null,
-            null
+            Profile(null,"","",null)
         )
 
 

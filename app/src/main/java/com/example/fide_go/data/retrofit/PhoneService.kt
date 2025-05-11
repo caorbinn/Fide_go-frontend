@@ -14,15 +14,15 @@ import retrofit2.http.Query
 interface PhoneService {
     //CAMBIAR EDENTIFICA
 
-    @PUT("edentifica/phones/update")
+    @PUT("fide_go/phones/update")
     suspend fun updatePhone(@Body phone: Phone): Response<Boolean>
 
-    @GET("edentifica/phones/get/{idprofile}")
+    @GET("fide_go/phones/get/{idprofile}")
     suspend fun listPhonesUser(@Path("idprofile") idprofile: String): Response<Set<Phone>>
 
-    @GET("edentifica/phones/get")
+    @GET("fide_go/phones/get")
     suspend fun getPhone(@Query("id") id: String): Response<Phone>
 
-    @DELETE("edentifica/phones/delete/{id}")
+    @DELETE("fide_go/phones/delete/{id}")
     suspend fun deletePhone(@Path("id") id: String): Response<Boolean>
 }

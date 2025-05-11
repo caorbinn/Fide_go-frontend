@@ -19,4 +19,13 @@
     <string name="registro_con_exito">Registro exitoso</string>
     <string name="hay_campos_vacios">Hay campos vacíos</string>
     <string name="no_tiene_cuenta_registrate">¿No tienes una cuenta? Regístrate aquí</string>
+    <string name="hola">Hola</string>
+    <string name="bienvenid">Bienvenido\n</string>
+    <string name="usuario_anonimo">"Usuario anónimo "</string>
+    <string name="bienvenido_a_fidego">Bienvenido a Fide-Go</string>
+    <string name="fidego">Fide-Go</string>
+    <string name="cerrar_sesi_n">Cerrar sesión</string>
+    <string name="est_s_seguro_que_deseas_cerrar_sesi_n">¿Estás seguro de que deseas cerrar sesión?</string>
+    <string name="aceptar">"Aceptar "</string>
+    <string name="cancelar">Cancelar</string>
 </resources>

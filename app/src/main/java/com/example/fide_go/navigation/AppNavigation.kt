@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.fide_go.ui.screens.HomeScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.ForgotPasswordScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.LoginScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.RegisterScreen
@@ -74,7 +75,7 @@ fun AppNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = /*if(user==null)*/ AppScreen.LoginScreen.route /*else AppScreen.HomeScreen.route*/ // here we have a conditional, this redirect to screen start depends of user exist or not
+        startDestination = if(user==null) AppScreen.LoginScreen.route else AppScreen.HomeScreen.route // here we have a conditional, this redirect to screen start depends of user exist or not
     ){
         composable(route=AppScreen.LoginScreen.route){
             LoginScreen(
@@ -101,7 +102,7 @@ fun AppNavigation(
                 )
         }
 
-        /*
+
         composable(route= AppScreen.HomeScreen.route){
             HomeScreen(
                 navController = navController,
@@ -110,7 +111,7 @@ fun AppNavigation(
                 vmUsers= vmUsers
             )
         }
-
+        /*
         composable(route=AppScreen.InfoValidationsScreen.route){
             InfoValidationsScreen(
                 navController = navController,

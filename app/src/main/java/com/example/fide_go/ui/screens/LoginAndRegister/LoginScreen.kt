@@ -361,11 +361,11 @@ private suspend fun emailPassSignIn(
     if(email.isNotEmpty() && password.isNotEmpty()) {
         when (val result = auth.signInWithEmailandPassword(email, password)) {
             is AuthRes.Succes-> {
-                /*navController.navigate(AppScreen.HomeScreen.route) {
+                navController.navigate(AppScreen.HomeScreen.route) {
                     popUpTo(AppScreen.LoginScreen.route) {
                         inclusive = true
                     }
-                }*/
+                }
 
             }
 
@@ -386,11 +386,11 @@ private suspend fun emailPassSignIn(
 private suspend fun incognitoSignIn(auth: AuthManager, context: Context, navController: NavController) {
     when(val result = auth.signInAnonymously()){
         is AuthRes.Succes ->{
-           /* navController.navigate(AppScreen.HomeScreen.route){
+            navController.navigate(AppScreen.HomeScreen.route){
                 popUpTo(AppScreen.LoginScreen.route){
                     inclusive= true
                 }
-            }*/
+            }
         }
         is AuthRes.Error ->{
             Log.d("Error modo invitado","Este error se produce cuando un usuario quiere acceder como invitado en la app")
