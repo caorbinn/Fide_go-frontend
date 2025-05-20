@@ -1,12 +1,13 @@
 package com.example.fide_go.viewModel
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fide_go.data.model.Email
 import com.example.fide_go.data.model.Phone
 import com.example.fide_go.data.model.Profile
-import com.example.fide_go.data.model.SocialNetwork
 import com.example.fide_go.data.retrofit.RetrofitApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +34,7 @@ class ProfileViewModel: ViewModel() {
     /**
      * Esta funcion recibe un Email y lo inserta en la base de datos
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun insertEmailVm(email: Email, idProfile:String) {
         viewModelScope.launch {
             try {
@@ -53,6 +55,7 @@ class ProfileViewModel: ViewModel() {
     /**
      * Esta funcion recibe un Email y lo inserta en la base de datos
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun insertPhoneVm(phone: Phone, idProfile:String) {
         viewModelScope.launch {
             try {
@@ -70,29 +73,12 @@ class ProfileViewModel: ViewModel() {
         }
     }
 
-    /**
-     * Esta funcion recibe una red social y lo inserta en la base de datos
-     */
-    fun insertSocialNetworkVm(socialNetwork: SocialNetwork, idProfile:String) {
-        viewModelScope.launch {
-            try {
-                val response = RetrofitApi.profileService.insertSocialNetwork(idProfile, socialNetwork)
-                if (response.isSuccessful) {
-                    _socialInserted.value = true
-                } else {
-                    _socialInserted.value = false
-                    Log.e("error en profileViewModel", response.isSuccessful.toString())
-                }
-            } catch (e: Exception) {
-                // Manejar errores de red u otros errores
-                e.message?.let { Log.e("error catch profileViewModel insert social", it) }
-            }
-        }
-    }
+
 
     /**
      * Esta funcion recibe un Profile y lo guarda
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun saveProfileEdit(profile: Profile) {
         viewModelScope.launch {
             try {
@@ -114,6 +100,7 @@ class ProfileViewModel: ViewModel() {
     /**
      * Esta funcion recibe un Profile y lo actualiza
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun updateProfileVM(profile: Profile) {
         viewModelScope.launch {
             try {

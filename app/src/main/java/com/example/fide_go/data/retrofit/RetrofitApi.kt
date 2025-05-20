@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
+@RequiresApi(Build.VERSION_CODES.O)
 object RetrofitApi {
     private val  BASE_URL = "https://dkhmzp0m-8000.uks1.devtunnels.ms/" //IMPORTANTE CAMBIAR DEPENDIENDO DEL WIFI O RED
 
@@ -26,6 +27,7 @@ object RetrofitApi {
         .create()
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
@@ -38,8 +40,10 @@ object RetrofitApi {
     val userService : UserService by lazy { retrofit.create(UserService::class.java) }
     val phoneService : PhoneService by lazy { retrofit.create(PhoneService::class.java) }
     val emailService : EmailService by lazy { retrofit.create(EmailService::class.java) }
-    val socialNetworkService : SocialNetworkService by lazy { retrofit.create(SocialNetworkService::class.java) }
     val profileService : ProfileService by lazy { retrofit.create(ProfileService::class.java) }
+    val bussinessService : BussinessService by lazy { retrofit.create(BussinessService::class.java) }
+    val offersService : OffersService by lazy { retrofit.create(OffersService::class.java) }
+
 
 
 }

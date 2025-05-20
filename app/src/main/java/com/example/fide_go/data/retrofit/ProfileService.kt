@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.example.fide_go.data.model.Email
 import com.example.fide_go.data.model.Phone
 import com.example.fide_go.data.model.Profile
-import com.example.fide_go.data.model.SocialNetwork
 import com.example.fide_go.data.model.User
 import retrofit2.Response
 import retrofit2.http.Body
@@ -15,8 +14,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ProfileService {
-
-    //CAMBIAR EDENTIFICA
 
     @GET("fide_go/profiles/get")
     suspend fun getProfileById(@Query("id") id: String): Response<Profile>
@@ -30,7 +27,5 @@ interface ProfileService {
     @POST("fide_go/profiles/insert_phone/{profileId}")
     suspend fun insertPhone(@Path("profileId") profileId: String, @Body phone: Phone): Response<Boolean>
 
-    @POST("fide_go/profiles/insert_social_network/{profileId}")
-    suspend fun insertSocialNetwork(@Path("profileId") profileId: String, @Body socialNetwork: SocialNetwork): Response<Boolean>
 
 }

@@ -46,6 +46,7 @@ import com.example.fide_go.viewModel.UsersViewModel
 import com.example.fide_go.utils.AuthManager
 import com.google.firebase.auth.FirebaseUser
 import com.example.fide_go.utils.googleAuth.SignInState
+import com.example.fide_go.viewModel.BussinessViewModel
 import com.example.fide_go.viewModel.EmailViewModel
 import com.example.fide_go.viewModel.PhonesViewModel
 import com.example.fide_go.viewModel.ProfileViewModel
@@ -60,7 +61,8 @@ fun AppNavigation(
     vmUsers: UsersViewModel,
     vmPhones: PhonesViewModel,
     vmEmails: EmailViewModel,
-    vmProfiles: ProfileViewModel
+    vmProfiles: ProfileViewModel,
+    vmBussiness: BussinessViewModel
 ) {
     //Aqui se maneja toda la navegacion entre nuestras pantallas
     //This handles all the navigation between our screens.
@@ -108,7 +110,8 @@ fun AppNavigation(
                 navController = navController,
                 auth= authManager,
                 onSignOutGoogle= onSignOutGoogle,
-                vmUsers= vmUsers
+                vmUsers= vmUsers,
+                vmBussiness =  vmBussiness
             )
         }
         /*

@@ -28,6 +28,7 @@ import com.example.fide_go.navigation.AppNavigation
 import com.example.fide_go.ui.theme.Fide_goTheme
 import com.example.fide_go.utils.googleAuth.GoogleAuthUiClient
 import com.example.fide_go.utils.googleAuth.SignInViewModel
+import com.example.fide_go.viewModel.BussinessViewModel
 import com.example.fide_go.viewModel.EmailViewModel
 import com.example.fide_go.viewModel.PhonesViewModel
 import com.example.fide_go.viewModel.ProfileViewModel
@@ -55,6 +56,8 @@ class MainActivity : ComponentActivity() {
     private val vmPhones by viewModels<PhonesViewModel>()
     private val vmEmails by viewModels<EmailViewModel>()
     private val vmProfiles by viewModels<ProfileViewModel>()
+    private val vmBussiness by viewModels<BussinessViewModel>()
+
 
     // Cliente de One-Tap / Google Identity
     private val googleAuthUiClient by lazy {
@@ -135,7 +138,8 @@ class MainActivity : ComponentActivity() {
                         vmUsers = vmUsers,
                         vmPhones = vmPhones,
                         vmEmails = vmEmails,
-                        vmProfiles = vmProfiles
+                        vmProfiles = vmProfiles,
+                        vmBussiness = vmBussiness
                     )
                 }
             }

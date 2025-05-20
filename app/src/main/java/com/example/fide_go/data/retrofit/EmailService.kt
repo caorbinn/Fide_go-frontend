@@ -10,8 +10,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface EmailService {
-
-    //CAMBIAR EDENTIFICA
     @PUT("fide_go/emails/update")
     suspend fun updateEmail(@Body email: Email): Response<Boolean>
 

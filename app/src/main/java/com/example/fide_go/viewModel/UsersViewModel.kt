@@ -1,13 +1,14 @@
 package com.example.fide_go.viewModel
 
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fide_go.data.model.Profile
 import com.example.fide_go.data.model.User
-import com.example.fide_go.data.model.dto.UserDto
 import com.example.fide_go.data.retrofit.RetrofitApi
 import com.example.fide_go.data.retrofit.RetrofitApi.userService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,15 +19,6 @@ import kotlinx.coroutines.launch
 class UsersViewModel : ViewModel() {
     private val _user = MutableStateFlow<User?>(null)
     val user: StateFlow<User?> = _user
-
-    private val _userEmailSearch = MutableStateFlow<UserDto?>(null)
-    val userEmailSearch: StateFlow<UserDto?> = _userEmailSearch
-
-    private val _userPhoneSearch = MutableStateFlow<UserDto?>(null)
-    val userPhoneSearch: StateFlow<UserDto?> = _userPhoneSearch
-
-    private val _userSocialSearch = MutableStateFlow<UserDto?>(null)
-    val userSocialSearch: StateFlow<UserDto?> = _userSocialSearch
 
     private val _userInserted = MutableStateFlow<Boolean?>(false)
     val userInserted: StateFlow<Boolean?> = _userInserted
@@ -87,6 +79,7 @@ class UsersViewModel : ViewModel() {
     /**
      * Esta funcion recibe un email y nos devuelve al usuario encontrado
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getUserByEmail(email: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -107,111 +100,6 @@ class UsersViewModel : ViewModel() {
     }
 
     //BUSQUEDAS
-    /**
-     * Esta funcion recibe un email y nos devuelve al usuario encontrado, esta la utilizamos para las busquedas de correo
-     */
-    fun getUserByEmailSearch(email: String) {
-        viewModelScope.launch {
-            try {
-                val response = userService.getDtoByEmail(email)
-                if (response.isSuccessful) {
-                    _userEmailSearch.value = response.body()
-                } else {
-                    Log.e("error en userViewModel", "getUserByEmailSearch")
-                }
-            } catch (e: Exception) {
-                // Manejar errores de red u otros errores
-                e.message?.let { Log.e("error catch userViewModel getUserByEmailSearch", it) }
-            }
-        }
-    }
-
-
-    /**
-     * Esta funcion pone en nulo la respuesta de buscar por email
-     */
-    fun putEmailResultNull() {
-        viewModelScope.launch {
-            try {
-                _userEmailSearch.value=null
-            } catch (e: Exception) {
-                // Manejar errores de red u otros errores
-                e.message?.let { Log.e("error catch userViewModel EmailResultNull", it) }
-            }
-        }
-    }
-
-
-
-    /**
-     * Esta funcion recibe un phone y nos devuelve al usuario encontrado, esta la utilizamos para las busquedas de telefonos
-     */
-    fun getUserByPhoneSearch(phone: String) {
-        viewModelScope.launch {
-            try {
-                val response = userService.getDtoByPhone(phone)
-                if (response.isSuccessful) {
-                    _userPhoneSearch.value = response.body()
-                } else {
-                    Log.e("error en userViewModel", "getUserByPhoneSearch")
-                }
-            } catch (e: Exception) {
-                // Manejar errores de red u otros errores
-                e.message?.let { Log.e("error catch userViewModel getUserByPhoneSearch", it) }
-            }
-        }
-    }
-
-    /**
-     * Esta funcion pone en nulo la respuesta de buscar por telefono
-     */
-    fun putPhoneResultNull() {
-        viewModelScope.launch {
-            try {
-                _userPhoneSearch.value=null
-            } catch (e: Exception) {
-                // Manejar errores de red u otros errores
-                e.message?.let { Log.e("error catch userViewModel PhoneResultNull", it) }
-            }
-        }
-    }
-
-
-
-    /**
-     * Esta funcion recibe un phone y nos devuelve al usuario encontrado, esta la utilizamos para las busquedas de telefonos
-     */
-    fun getUserBySocialSearch(type: String, socialname: String) {
-        viewModelScope.launch {
-            try {
-                val response = userService.getDtoBySocialNetwork(type,socialname)
-                Log.e("error en userViewModel", ""+ response)
-                if (response.isSuccessful) {
-                    _userSocialSearch.value = response.body()
-                } else {
-                    Log.e("error en userViewModel", "getUserBySocialSearch" + response.body())
-                }
-            } catch (e: Exception) {
-                // Manejar errores de red u otros errores
-                e.message?.let { Log.e("error catch userViewModel getUserBySocialSearch", it) }
-            }
-        }
-    }
-
-    /**
-     * Esta funcion pone en nulo la respuesta de buscar por telefono
-     */
-    fun putSocialNetworkResultNull() {
-        viewModelScope.launch {
-            try {
-                _userSocialSearch.value=null
-            } catch (e: Exception) {
-                // Manejar errores de red u otros errores
-                e.message?.let { Log.e("error catch userViewModel SocialNetworkResultNull", it) }
-            }
-        }
-    }
-
 
 
     //FUNCIONES VALIDACIONES
@@ -249,7 +137,8 @@ class UsersViewModel : ViewModel() {
     /**
      * Esta funcion recibe la respuesta matematica y actualiza su variable si es correcta
      */
-    fun answerMathByUser(answer: Int,user: User) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun answerMathByUser(answer: Int, user: User) {
         viewModelScope.launch {
             try {
                 val response = userService.answerMathChallenge(answer,user)
@@ -309,6 +198,7 @@ class UsersViewModel : ViewModel() {
     /**
      * Esta funcion recibe un User y lo actualiza
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun updateUserVM(user:User) {
         viewModelScope.launch {
             try {
@@ -330,6 +220,7 @@ class UsersViewModel : ViewModel() {
     /**
      * Esta funcion recibe un User y lo guarda
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun saveUserEdit(user: User) {
         viewModelScope.launch {
             try {
