@@ -10,4 +10,6 @@ object AppColors {
     val darkFide = Color(0xFF0D0D0D)
     val grayFide = Color(0xFF363636)
     val greenFide = Color(0xFF006400)
+    val goldFide = Color(0xFFFFD700)
+
 }

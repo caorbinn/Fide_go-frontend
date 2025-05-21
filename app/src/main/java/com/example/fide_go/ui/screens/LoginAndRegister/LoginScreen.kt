@@ -100,8 +100,9 @@ fun LoginScreen(
     Scaffold (
         bottomBar = {
             BottomAppBar(
-                contentColor = AppColors.mainFide,
-                modifier = Modifier.height(44.dp)
+                contentColor = AppColors.whitePerlaFide,
+                modifier = Modifier.height(44.dp),
+                backgroundColor = AppColors.darkFide
             ) {
                 Text(
                     text = stringResource(R.string.copyright),
@@ -211,11 +212,11 @@ fun FormularioLogin(
     ) {
         //Logo
         Image(
-            painter = painterResource(id = R.drawable.nombre_edentifica),
-            contentDescription = "Logo eDentifica",
+            painter = painterResource(id = R.drawable.fideblanco),
+            contentDescription = "Logo Fide_go",
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp), // ajusta la altura según sea necesario
+                .height(150.dp), // ajusta la altura según sea necesario
             contentScale = ContentScale.Crop // Escala de la imagen
         )
 
@@ -249,7 +250,7 @@ fun FormularioLogin(
                     }
                 },
                 shape = RoundedCornerShape(50.dp),
-                colors = ButtonDefaults.buttonColors(contentColor = AppColors.FocusFide),
+                colors = ButtonDefaults.buttonColors(contentColor = AppColors.goldFide),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
@@ -306,15 +307,15 @@ fun FormularioLogin(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Botón de inicio de sesión con Google
-        SocialMediaButton(
-            onClick = onSignInClick,
-            text = "continuar con google",
-            icon = R.drawable.nombre_edentifica,
-            color = Color(0xFFF1F1F1)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
+//        // Botón de inicio de sesión con Google
+//        SocialMediaButton(
+//            onClick = onSignInClick,
+//            text = "continuar con google",
+//            icon = R.drawable.nombre_edentifica,
+//            color = Color(0xFFF1F1F1)
+//        )
+//
+//        Spacer(modifier = Modifier.height(8.dp))
 
         // Botón de inicio de sesión como invitado
         SocialMediaButton(
@@ -324,7 +325,7 @@ fun FormularioLogin(
                 }
             },
             text = "continuar como invitado",
-            icon = R.drawable.nombre_edentifica,
+            icon = R.drawable.user,
             color = AppColors.grayFide
         )
 
@@ -408,7 +409,7 @@ fun SocialMediaButton(onClick: () -> Unit, text: String, icon: Int, color: Color
             .padding(start = 40.dp, end = 40.dp)
             .clickable { click = !click },
         shape = RoundedCornerShape(50),
-        border = BorderStroke(width = 1.dp, color = if(icon == R.drawable.nombre_edentifica) color else Color.Gray),
+        border = BorderStroke(width = 1.dp, color = if(icon == R.drawable.user) color else Color.White),
         color = color
     ) {
         Row(
@@ -422,10 +423,10 @@ fun SocialMediaButton(onClick: () -> Unit, text: String, icon: Int, color: Color
                 painter = painterResource(id = icon),
                 modifier = Modifier.size(24.dp),
                 contentDescription = text,
-                tint = Color.Unspecified
+                tint = Color.White
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "$text", color = if(icon == R.drawable.nombre_edentifica) Color.White else Color.Black)
+            Text(text = "$text", color = if(icon == R.drawable.user) Color.White else Color.White)
             click = true
         }
     }

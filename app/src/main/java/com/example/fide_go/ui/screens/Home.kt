@@ -137,7 +137,9 @@ fun HomeScreen(
                     fontSize = TextSizes.Footer,
                     fontStyle = FontStyle.Italic,
                     color = AppColors.whitePerlaFide,
-                    modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.Center)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentSize(Alignment.Center)
                 )
             }
         }
@@ -164,7 +166,9 @@ fun HomeScreen(
                 CircularProgressIndicator(
                     color = AppColors.FocusFide,
                     strokeWidth = 4.dp,
-                    modifier = Modifier.align(Alignment.Center).size(48.dp)
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(48.dp)
                 )
             } else {
                 BodyContentHome(navController, vmUsers, userState, vmBussiness)
@@ -191,94 +195,98 @@ fun BodyContentHome(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(8.dp),
+            .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = if (userState != null)
-                stringResource(R.string.bienvenido_a_fidego)
-            else
-                stringResource(R.string.fidego),
-            fontSize = TextSizes.title,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Cursive,
-            modifier = Modifier.padding(bottom = 16.dp),
-            color = AppColors.mainFide
-        )
-
         Image(
-            painter = painterResource(id = R.drawable.nombre_edentifica),
+            painter = painterResource(id = R.drawable.fide),
             contentDescription = "imagen de bienvenida",
-            modifier = Modifier.fillMaxWidth().scale(0.7f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = if (userState != null)
+                stringResource(R.string.navega_por_nuestros_negocios_y_descubre_ofertas_incre_bles_pensadas_para_ti)
+            else
+                stringResource(R.string.fidego),
+            fontSize = TextSizes.H2,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.Serif,
+            modifier = Modifier.padding(top=24.dp,bottom = 16.dp),
+            color = AppColors.mainFide
+        )
+
+        Spacer(modifier = Modifier.height(4.dp)) // más chico
 
         if (businesses.isNotEmpty()) {
             businesses.forEach { business ->
                 BusinessCard(business = business) {
                     // navController.navigate("businessDetail/${business.id}")
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(24.dp)) // también más chico
             }
         } else {
             CircularProgressIndicator()
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 40.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                onClick = { /* navController.navigate(AppScreen.FindByEmailScreen.route) */ },
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
-                shape = RoundedCornerShape(50.dp),
-                modifier = Modifier.weight(1f).height(50.dp)
-            ) {
-                Text("Buscar correo")
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Button(
-                onClick = { /* navController.navigate(AppScreen.FindByPhoneScreen.route) */ },
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
-                shape = RoundedCornerShape(50.dp),
-                modifier = Modifier.weight(1f).height(50.dp)
-            ) {
-                Text("Buscar teléfono")
-            }
-        }
+        Spacer(modifier = Modifier.height(16.dp)) // opcionalmente más pequeño
     }
+
 }
+
 
 @Composable
 fun BusinessCard(business: Bussiness, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+        colors = CardDefaults.cardColors(containerColor = AppColors.whitePerlaFide)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = business.bussinessName.orEmpty(), fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            if (!business.bussinessDescription.isNullOrBlank()) {
-                Text(text = business.bussinessDescription.orEmpty(), fontSize = 14.sp, color = Color.Gray)
-            }
-            if (!business.bussinessAddress.isNullOrBlank()) {
-                Text(text = business.bussinessAddress.orEmpty(), fontSize = 14.sp)
+        Column {
+            // Imagen estática local
+            Image(
+                painter = painterResource(id = R.drawable.barberia),
+                contentDescription = "Imagen del negocio",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+            )
+
+            // Información del negocio
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = business.bussinessName.takeIf { it.isNotBlank() } ?: "",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = AppColors.mainFide,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = business.bussinessAddress?.takeIf { it.isNotBlank() } ?: "",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
 }
+
+
+
 
 @Composable
 fun ClickableProfileImage(

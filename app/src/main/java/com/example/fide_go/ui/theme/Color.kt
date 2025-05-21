@@ -2,10 +2,10 @@ package com.example.fide_go.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val Gold80 = Color(0xFFFFE08C)         // Dorado suave para fondo o elementos grandes
+val GoldBeige80 = Color(0xFFFFF4D9)     // Beige claro, ideal para fondo base
+val GoldRose80 = Color(0xFFFFE4B5)      // Toque cálido, como "golden pink"
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val Gold40 = Color(0xFFFFD700)         // Dorado puro, ideal para acentos (botones, iconos)
+val GoldBrown40 = Color(0xFFB8860B)     // Dorado oscuro, elegante para texto o bordes
+val GoldCopper40 = Color(0xFFDAA520)    // Tonalidad cobriza con clase
