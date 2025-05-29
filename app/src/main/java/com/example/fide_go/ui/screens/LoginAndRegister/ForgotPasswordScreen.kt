@@ -136,7 +136,7 @@ fun FormularioForgotPassword(
         Spacer(modifier = Modifier.height(102.dp))
         //Logo
         Image(
-            painter = painterResource(id = R.drawable.nombre_edentifica),
+            painter = painterResource(id = R.drawable.fideblanco),
             contentDescription = "Logo eDentifica",
             modifier = Modifier
                 .fillMaxWidth()

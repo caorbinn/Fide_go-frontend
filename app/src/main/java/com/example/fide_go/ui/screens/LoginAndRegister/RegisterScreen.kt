@@ -149,8 +149,8 @@ fun RegisterScreen(
                 Spacer(modifier = Modifier.height(18.dp))
                 //Logo
                 Image(
-                    painter = painterResource(id = R.drawable.nombre_edentifica),
-                    contentDescription = "Logo eDentifica",
+                    painter = painterResource(id = R.drawable.fideblanco),
+                    contentDescription = "Logo Fide-go",
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(100.dp), // ajusta la altura según sea necesario

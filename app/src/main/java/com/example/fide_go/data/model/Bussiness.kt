@@ -7,5 +7,6 @@ data class Bussiness(
     @SerializedName("bussinessName") var bussinessName:String,
     @SerializedName("bussinessDescription") var bussinessDescription:String?,
     @SerializedName("bussinessAddress") var bussinessAddress:String?,
+    @SerializedName("urlImageBussiness") var urlImageBussiness:String?,
     @SerializedName("offers") var offers:List<Offers>?
 )

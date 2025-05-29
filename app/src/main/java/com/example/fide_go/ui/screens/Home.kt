@@ -251,9 +251,20 @@ fun BusinessCard(business: Bussiness, onClick: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = AppColors.whitePerlaFide)
     ) {
         Column {
-            // Imagen estática local
-            Image(
-                painter = painterResource(id = R.drawable.barberia),
+//            // Imagen estática local
+//            Image(
+//                painter = painterResource(id = R.drawable.barberia),
+//                contentDescription = "Imagen del negocio",
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(180.dp)
+//                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+//            )
+
+            // Imagen dinámica desde URL con Coil
+            AsyncImage(
+                model = business.urlImageBussiness,
                 contentDescription = "Imagen del negocio",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -261,6 +272,7 @@ fun BusinessCard(business: Bussiness, onClick: () -> Unit) {
                     .height(180.dp)
                     .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
             )
+
 
             // Información del negocio
             Column(modifier = Modifier.padding(16.dp)) {

@@ -49,6 +49,9 @@ android {
 }
 
 dependencies {
+
+    //coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
     // Jetpack Credential Manager
     implementation("androidx.credentials:credentials:1.2.2")
     implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
