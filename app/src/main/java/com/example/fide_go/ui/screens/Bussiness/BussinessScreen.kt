@@ -1,45 +1,50 @@
-package com.example.fide_go.ui.screens
+package com.example.fide_go.ui.screens.Bussiness
 
-import android.annotation.SuppressLint
+import android.graphics.fonts.FontStyle
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.*
-import androidx.compose.ui.text.font.*
-import androidx.compose.ui.text.style.*
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.fide_go.R
-import com.example.fide_go.data.model.*
+import com.example.fide_go.data.model.Bussiness
+import com.example.fide_go.data.model.Email
+import com.example.fide_go.data.model.Phone
+import com.example.fide_go.data.model.Profile
+import com.example.fide_go.data.model.User
 import com.example.fide_go.navigation.AppScreen
+import com.example.fide_go.ui.screens.ClickableProfileImage
+import com.example.fide_go.ui.theme.AppColors
+import com.example.fide_go.ui.theme.TextSizes
 import com.example.fide_go.utils.AuthManager
 import com.example.fide_go.viewModel.BussinessViewModel
 import com.example.fide_go.viewModel.UsersViewModel
-import com.example.fide_go.ui.theme.AppColors
-import com.example.fide_go.ui.theme.TextSizes
+import com.google.firebase.auth.FirebaseAuth
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(
+fun BussinessScreen(
     navController: NavController,
     auth: AuthManager,
     onSignOutGoogle: () -> Unit,
@@ -81,7 +86,6 @@ fun HomeScreen(
             popUpTo(AppScreen.HomeScreen.route) { inclusive = true }
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -135,7 +139,6 @@ fun HomeScreen(
                 Text(
                     text = stringResource(R.string.copyright),
                     fontSize = TextSizes.Footer,
-                    fontStyle = FontStyle.Italic,
                     color = AppColors.whitePerlaFide,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -171,159 +174,44 @@ fun HomeScreen(
                         .size(48.dp)
                 )
             } else {
-                BodyContentHome(navController, vmUsers, userState, vmBussiness)
+                BodyContentBusiness(navController, vmUsers, userState, vmBussiness)
             }
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
-fun BodyContentHome(
+fun BodyContentBusiness(
     navController: NavController,
     vmUsers: UsersViewModel,
     userState: User?,
     vmBusiness: BussinessViewModel
 ) {
-    val businesses by vmBusiness.listBussiness.collectAsState()
-
-    LaunchedEffect(Unit) {
-        vmBusiness.getListBussiness()
-    }
-
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(top = 48.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier.fillMaxSize()
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.fide),
-            contentDescription = "imagen de bienvenida",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            contentScale = ContentScale.Crop
-        )
-
         Text(
-            text = if (userState != null)
-                stringResource(R.string.navega_por_nuestros_negocios_y_descubre_ofertas_incre_bles_pensadas_para_ti)
-            else
-                stringResource(R.string.fidego),
-            fontSize = TextSizes.H2,
-            textAlign = TextAlign.Center,
+            text = "bussiness name",
+            fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Serif,
-            modifier = Modifier.padding(top=24.dp,bottom = 16.dp),
             color = AppColors.mainFide
         )
-
-        Spacer(modifier = Modifier.height(4.dp)) // más chico
-
-        if (businesses.isNotEmpty()) {
-            businesses.forEach { business ->
-                BusinessCard(business = business) {
-                    navController.navigate( AppScreen.BussinessScreen.route)
-                }
-                Spacer(modifier = Modifier.height(24.dp)) // también más chico
-            }
-        } else {
-            CircularProgressIndicator()
-        }
-
-        Spacer(modifier = Modifier.height(16.dp)) // opcionalmente más pequeño
-    }
-
-}
-
-
-@Composable
-fun BusinessCard(business: Bussiness, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
-        colors = CardDefaults.cardColors(containerColor = AppColors.whitePerlaFide)
-    ) {
-        Column {
-//            // Imagen estática local
-//            Image(
-//                painter = painterResource(id = R.drawable.barberia),
-//                contentDescription = "Imagen del negocio",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(180.dp)
-//                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-//            )
-
-            // Imagen dinámica desde URL con Coil
-            AsyncImage(
-                model = business.urlImageBussiness,
-                contentDescription = "Imagen del negocio",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-            )
-
-
-            // Información del negocio
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = business.bussinessName.takeIf { it.isNotBlank() } ?: "",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = AppColors.mainFide,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = business.bussinessAddress?.takeIf { it.isNotBlank() } ?: "",
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-    }
-}
-
-
-
-
-@Composable
-fun ClickableProfileImage(
-    navController: NavController,
-    imageUrl: String,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .clip(CircleShape)
-            .size(40.dp)
-            .clickable { onClick() }
-    ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl.ifBlank { R.drawable.nombre_edentifica })
-                .crossfade(true)
-                .build(),
-            contentDescription = "Imagen",
-            placeholder = painterResource(id = R.drawable.nombre_edentifica),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.clip(CircleShape)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "bussiness description",
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "Aquí aparecerán las promociones disponibles para este negocio.",
+            fontSize = 18.sp
         )
     }
 }
+
 
 @Composable
 fun LogoutDialog(
@@ -354,3 +242,4 @@ fun LogoutDialog(
         }
     )
 }
+

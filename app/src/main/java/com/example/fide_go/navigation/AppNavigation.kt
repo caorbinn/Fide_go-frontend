@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.fide_go.ui.screens.Bussiness.BussinessScreen
 import com.example.fide_go.ui.screens.HomeScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.ForgotPasswordScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.LoginScreen
@@ -114,16 +115,17 @@ fun AppNavigation(
                 vmBussiness =  vmBussiness
             )
         }
-        /*
-        composable(route=AppScreen.InfoValidationsScreen.route){
-            InfoValidationsScreen(
+
+        composable(route=AppScreen.BussinessScreen.route){
+            BussinessScreen(
                 navController = navController,
                 auth= authManager,
                 onSignOutGoogle= onSignOutGoogle,
-                vmUsers=vmUsers
+                vmUsers = vmUsers,
+                vmBussiness =vmBussiness
             )
         }
-
+/*
         composable(route=AppScreen.ValidationOneScreen.route){
             ValidationOneScreen(
                 navController = navController,
