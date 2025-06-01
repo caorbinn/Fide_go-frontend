@@ -71,7 +71,8 @@ fun BussinessScreen(
             currentUser.displayName.orEmpty(),
             Phone(null, currentUser.phoneNumber.orEmpty(), false, null),
             Email(null, currentUser.email.orEmpty(), false, null),
-            Profile(null, "", currentUser.photoUrl.toString(), null)
+            Profile(null, "", currentUser.photoUrl.toString(), null),
+            null
         )
         LaunchedEffect(Unit) {
             vmUsers.insertUserVm(userToInsert)

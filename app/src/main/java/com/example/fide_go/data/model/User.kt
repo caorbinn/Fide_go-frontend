@@ -7,7 +7,9 @@ data class User(
     @SerializedName("username") var username:String?,
     @SerializedName("phone")var phone:Phone,
     @SerializedName("email")var email:Email,
-    @SerializedName("profile")var profile:Profile?
+    @SerializedName("profile")var profile:Profile?,
+    @SerializedName("admin")var admin:Boolean?
+
 
 
 )

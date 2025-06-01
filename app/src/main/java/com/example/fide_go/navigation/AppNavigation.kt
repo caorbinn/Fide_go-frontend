@@ -7,11 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.fide_go.data.model.Offers
 import com.example.fide_go.ui.screens.Bussiness.BussinessScreen
 import com.example.fide_go.ui.screens.HomeScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.ForgotPasswordScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.LoginScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.RegisterScreen
+import com.example.fide_go.ui.screens.Offers.OffersScreen
 /*
 import com.example.fide_go.ui.screens.Search.FindByEmailScreen
 import com.example.fide_go.ui.screens.Search.FindByPhoneScreen
@@ -49,6 +51,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.example.fide_go.utils.googleAuth.SignInState
 import com.example.fide_go.viewModel.BussinessViewModel
 import com.example.fide_go.viewModel.EmailViewModel
+import com.example.fide_go.viewModel.OffersViewModel
 import com.example.fide_go.viewModel.PhonesViewModel
 import com.example.fide_go.viewModel.ProfileViewModel
 
@@ -63,7 +66,8 @@ fun AppNavigation(
     vmPhones: PhonesViewModel,
     vmEmails: EmailViewModel,
     vmProfiles: ProfileViewModel,
-    vmBussiness: BussinessViewModel
+    vmBussiness: BussinessViewModel,
+    vmOffers: OffersViewModel
 ) {
     //Aqui se maneja toda la navegacion entre nuestras pantallas
     //This handles all the navigation between our screens.
@@ -123,6 +127,16 @@ fun AppNavigation(
                 onSignOutGoogle= onSignOutGoogle,
                 vmUsers = vmUsers,
                 vmBussiness =vmBussiness
+            )
+        }
+
+        composable(route=AppScreen.OffersScreen.route){
+            OffersScreen(
+                navController = navController,
+                auth = authManager,
+                onSignOutGoogle = onSignOutGoogle,
+                vmUsers = vmUsers,
+                vmOffers = vmOffers
             )
         }
 /*

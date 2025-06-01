@@ -34,6 +34,7 @@ import com.example.fide_go.viewModel.BussinessViewModel
 import com.example.fide_go.viewModel.UsersViewModel
 import com.example.fide_go.ui.theme.AppColors
 import com.example.fide_go.ui.theme.TextSizes
+import java.io.Console
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,7 +67,8 @@ fun HomeScreen(
             currentUser.displayName.orEmpty(),
             Phone(null, currentUser.phoneNumber.orEmpty(), false, null),
             Email(null, currentUser.email.orEmpty(), false, null),
-            Profile(null, "", currentUser.photoUrl.toString(), null)
+            Profile(null, "", currentUser.photoUrl.toString(), null),
+            null // manteniendo todo igual, se asume false por defecto o según backend
         )
         LaunchedEffect(Unit) {
             vmUsers.insertUserVm(userToInsert)
@@ -198,6 +200,34 @@ fun BodyContentHome(
             .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(40.dp))
+        if (userState != null) {
+            println("esto es una prueba de admin" + userState.admin)
+        }
+        // ———————— Agregado: botón “Editar ofertas” solo para admins ————————
+        if (userState?.admin == true) {
+            Button(
+                onClick = {
+                    // Navegar a la pantalla de edición de ofertas
+                    navController.navigate(AppScreen.OffersScreen.route)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .height(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide)
+            ) {
+                Text(
+                    text = "Editar ofertas",
+                    color = AppColors.whitePerlaFide,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        // ——————————————————————————————————————————————————————————————
+
         Image(
             painter = painterResource(id = R.drawable.fide),
             contentDescription = "imagen de bienvenida",
@@ -216,27 +246,27 @@ fun BodyContentHome(
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.Serif,
-            modifier = Modifier.padding(top=24.dp,bottom = 16.dp),
+            modifier = Modifier.padding(top = 24.dp, bottom = 16.dp),
             color = AppColors.mainFide
         )
 
-        Spacer(modifier = Modifier.height(4.dp)) // más chico
+        Spacer(modifier = Modifier.height(4.dp))
 
         if (businesses.isNotEmpty()) {
             businesses.forEach { business ->
                 BusinessCard(business = business) {
-                    navController.navigate( AppScreen.BussinessScreen.route)
+                    navController.navigate(AppScreen.BussinessScreen.route)
                 }
-                Spacer(modifier = Modifier.height(24.dp)) // también más chico
+                Spacer(modifier = Modifier.height(24.dp))
             }
         } else {
             CircularProgressIndicator()
         }
 
-        Spacer(modifier = Modifier.height(16.dp)) // opcionalmente más pequeño
+        Spacer(modifier = Modifier.height(16.dp))
     }
-
 }
+
 
 
 @Composable
