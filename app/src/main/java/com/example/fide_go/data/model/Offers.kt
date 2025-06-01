@@ -7,5 +7,7 @@ data class Offers(
     @SerializedName("title") var title:String,
     @SerializedName("description") var description:String?,
     @SerializedName("termsAndConditions") var termsAndConditions:String?,
-    @SerializedName("points") var points:Int?
+    @SerializedName("points") var points:Int?,
+    //cambios
+    @SerializedName("bussinessId") var bussinessId:String?
 )

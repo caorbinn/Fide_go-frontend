@@ -98,7 +98,7 @@ fun AppNavigation(
             RegisterScreen(
                 navController = navController,
                 auth = authManager,
-                   vmUsers=vmUsers
+                vmUsers=vmUsers
             )
         }
 
@@ -106,7 +106,7 @@ fun AppNavigation(
             ForgotPasswordScreen(
                 navController = navController,
                 auth = authManager
-                )
+            )
         }
 
 
@@ -136,244 +136,245 @@ fun AppNavigation(
                 auth = authManager,
                 onSignOutGoogle = onSignOutGoogle,
                 vmUsers = vmUsers,
-                vmOffers = vmOffers
+                vmOffers = vmOffers,
+                vmBussiness = vmBussiness
             )
         }
-/*
-        composable(route=AppScreen.ValidationOneScreen.route){
-            ValidationOneScreen(
-                navController = navController,
-                auth= authManager,
-                onSignOutGoogle= onSignOutGoogle,
-                vmUsers=vmUsers
-            )
-        }
+        /*
+                composable(route=AppScreen.ValidationOneScreen.route){
+                    ValidationOneScreen(
+                        navController = navController,
+                        auth= authManager,
+                        onSignOutGoogle= onSignOutGoogle,
+                        vmUsers=vmUsers
+                    )
+                }
 
 
-        composable(route=AppScreen.ValidationTwoScreen.route){
-            ValidationTwoScreen(
-                navController = navController,
-                auth= authManager,
-                onSignOutGoogle= onSignOutGoogle,
-                vmUsers=vmUsers
-            )
-        }
+                composable(route=AppScreen.ValidationTwoScreen.route){
+                    ValidationTwoScreen(
+                        navController = navController,
+                        auth= authManager,
+                        onSignOutGoogle= onSignOutGoogle,
+                        vmUsers=vmUsers
+                    )
+                }
 
 
-        composable(route=AppScreen.ValidationOneCheckScreen.route){
-            ValidationOneCheckScreen(
-                navController = navController,
-                auth= authManager,
-                vmUsers=vmUsers
-            )
-        }
+                composable(route=AppScreen.ValidationOneCheckScreen.route){
+                    ValidationOneCheckScreen(
+                        navController = navController,
+                        auth= authManager,
+                        vmUsers=vmUsers
+                    )
+                }
 
-        composable(route=AppScreen.ValidationOneSuccessScreen.route){
-            ValidationOneSuccessScreen(
-                navController = navController,
-                auth= authManager,
-                vmUsers=vmUsers
-            )
-        }
+                composable(route=AppScreen.ValidationOneSuccessScreen.route){
+                    ValidationOneSuccessScreen(
+                        navController = navController,
+                        auth= authManager,
+                        vmUsers=vmUsers
+                    )
+                }
 
-        composable(route=AppScreen.ValidationTwoSuccessScreen.route){
-            ValidationTwoSuccessScreen(
-                navController = navController,
-                auth= authManager,
-                vmUsers=vmUsers
-            )
-        }
+                composable(route=AppScreen.ValidationTwoSuccessScreen.route){
+                    ValidationTwoSuccessScreen(
+                        navController = navController,
+                        auth= authManager,
+                        vmUsers=vmUsers
+                    )
+                }
 
-        composable(route=AppScreen.RegisterPhoneScreen.route){
-            RegisterPhoneScreen(
-                navController = navController,
-                auth= authManager,
-                vmUsers=vmUsers,
-                vmPhones=vmPhones
-            )
-        }
+                composable(route=AppScreen.RegisterPhoneScreen.route){
+                    RegisterPhoneScreen(
+                        navController = navController,
+                        auth= authManager,
+                        vmUsers=vmUsers,
+                        vmPhones=vmPhones
+                    )
+                }
 
-        composable(route=AppScreen.ProfileUserScreen.route){
-            ProfileScreen(
-                navController = navController,
-                auth= authManager,
-                onSignOutGoogle= onSignOutGoogle,
-                vmUsers= vmUsers,
-                vmProfiles=vmProfiles
-            )
-        }
+                composable(route=AppScreen.ProfileUserScreen.route){
+                    ProfileScreen(
+                        navController = navController,
+                        auth= authManager,
+                        onSignOutGoogle= onSignOutGoogle,
+                        vmUsers= vmUsers,
+                        vmProfiles=vmProfiles
+                    )
+                }
 
-        //GENERAL
-        composable(route=AppScreen.FindByEmailScreen.route){
-            FindByEmailScreen(
-                navController = navController,
-                auth= authManager,
-                onSignOutGoogle= onSignOutGoogle,
-                vmUsers= vmUsers
-            )
-        }
+                //GENERAL
+                composable(route=AppScreen.FindByEmailScreen.route){
+                    FindByEmailScreen(
+                        navController = navController,
+                        auth= authManager,
+                        onSignOutGoogle= onSignOutGoogle,
+                        vmUsers= vmUsers
+                    )
+                }
 
-        composable(route=AppScreen.FindByPhoneScreen.route){
-            FindByPhoneScreen(
-                navController = navController,
-                auth= authManager,
-                onSignOutGoogle= onSignOutGoogle,
-                vmUsers= vmUsers
-            )
-        }
+                composable(route=AppScreen.FindByPhoneScreen.route){
+                    FindByPhoneScreen(
+                        navController = navController,
+                        auth= authManager,
+                        onSignOutGoogle= onSignOutGoogle,
+                        vmUsers= vmUsers
+                    )
+                }
 
-        composable(route=AppScreen.FindBySocialNetworkScreen.route){
-            FindBySocialNetworkScreen(
-                navController = navController,
-                auth= authManager,
-                onSignOutGoogle= onSignOutGoogle,
-                vmUsers= vmUsers
-            )
-        }
+                composable(route=AppScreen.FindBySocialNetworkScreen.route){
+                    FindBySocialNetworkScreen(
+                        navController = navController,
+                        auth= authManager,
+                        onSignOutGoogle= onSignOutGoogle,
+                        vmUsers= vmUsers
+                    )
+                }
 
-        composable(route=AppScreen.ResultSearchPhoneScreen.route){
-            ResultSearchPhoneScreen(
-                navController = navController,
-                auth= authManager,
-                onSignOutGoogle= onSignOutGoogle,
-                vmUsers= vmUsers
-            )
-        }
+                composable(route=AppScreen.ResultSearchPhoneScreen.route){
+                    ResultSearchPhoneScreen(
+                        navController = navController,
+                        auth= authManager,
+                        onSignOutGoogle= onSignOutGoogle,
+                        vmUsers= vmUsers
+                    )
+                }
 
-        composable(route=AppScreen.ResultSearchEmailScreen.route){
-            ResultSearchEmailScreen(
-                navController = navController,
-                auth= authManager,
-                onSignOutGoogle= onSignOutGoogle,
-                vmUsers= vmUsers
-            )
-        }
+                composable(route=AppScreen.ResultSearchEmailScreen.route){
+                    ResultSearchEmailScreen(
+                        navController = navController,
+                        auth= authManager,
+                        onSignOutGoogle= onSignOutGoogle,
+                        vmUsers= vmUsers
+                    )
+                }
 
-        composable(route=AppScreen.ResultSearchSocialScreen.route){
-            ResultSearchSocialScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers
-            )
-        }
+                composable(route=AppScreen.ResultSearchSocialScreen.route){
+                    ResultSearchSocialScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers
+                    )
+                }
 
-        //PROFILE
-        composable(route=AppScreen.ProfileUserEditScreen.route){
-            ProfileUserEditScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmProfile=vmProfiles
-            )
-        }
+                //PROFILE
+                composable(route=AppScreen.ProfileUserEditScreen.route){
+                    ProfileUserEditScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmProfile=vmProfiles
+                    )
+                }
 
-            //EMAIL-PROFILE
-        composable(route=AppScreen.EmailsScreen.route){
-            EmailsScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmEmails=vmEmails
-            )
-        }
+                    //EMAIL-PROFILE
+                composable(route=AppScreen.EmailsScreen.route){
+                    EmailsScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmEmails=vmEmails
+                    )
+                }
 
-        composable(route=AppScreen.EmailsEditScreen.route){
-            EmailsEditScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmEmails=vmEmails
-            )
-        }
+                composable(route=AppScreen.EmailsEditScreen.route){
+                    EmailsEditScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmEmails=vmEmails
+                    )
+                }
 
-        composable(route=AppScreen.EmailsAddScreen.route){
-            EmailsAddScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmEmails=vmEmails,
-                vmProfiles=vmProfiles
-            )
-        }
+                composable(route=AppScreen.EmailsAddScreen.route){
+                    EmailsAddScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmEmails=vmEmails,
+                        vmProfiles=vmProfiles
+                    )
+                }
 
-            //PHONE-PROFILE
-        composable(route=AppScreen.PhonesScreen.route){
-            PhonesScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmPhones=vmPhones
-            )
-        }
+                    //PHONE-PROFILE
+                composable(route=AppScreen.PhonesScreen.route){
+                    PhonesScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmPhones=vmPhones
+                    )
+                }
 
-        composable(route=AppScreen.PhonesEditScreen.route){
-            PhonesEditScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmPhones=vmPhones
-            )
-        }
+                composable(route=AppScreen.PhonesEditScreen.route){
+                    PhonesEditScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmPhones=vmPhones
+                    )
+                }
 
-        composable(route=AppScreen.PhonesAddScreen.route){
-            PhonesAddScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmPhones=vmPhones,
-                vmProfiles=vmProfiles
-            )
-        }
+                composable(route=AppScreen.PhonesAddScreen.route){
+                    PhonesAddScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmPhones=vmPhones,
+                        vmProfiles=vmProfiles
+                    )
+                }
 
-            //SOCIAL NETWORKS-PROFILE
-        composable(route=AppScreen.SocialNetworksScreen.route){
-            SocialNetworksScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmSocial=vmSocialNetworks
-            )
-        }
+                    //SOCIAL NETWORKS-PROFILE
+                composable(route=AppScreen.SocialNetworksScreen.route){
+                    SocialNetworksScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmSocial=vmSocialNetworks
+                    )
+                }
 
-        composable(route=AppScreen.SocialNetworksEditScreen.route){
-            SocialNetworksEditScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmSocial=vmSocialNetworks
-            )
-        }
+                composable(route=AppScreen.SocialNetworksEditScreen.route){
+                    SocialNetworksEditScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmSocial=vmSocialNetworks
+                    )
+                }
 
-        composable(route=AppScreen.SocialNetworksAddScreen.route){
-            SocialNetworksAddScreen(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmSocial=vmSocialNetworks,
-                vmProfiles=vmProfiles
-            )
-        }
+                composable(route=AppScreen.SocialNetworksAddScreen.route){
+                    SocialNetworksAddScreen(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmSocial=vmSocialNetworks,
+                        vmProfiles=vmProfiles
+                    )
+                }
 
-        composable(route=AppScreen.ProfileUserPhotoEditScreen.route){
-            EditPhoto(
-                navController = navController,
-                auth = authManager,
-                onSignOutGoogle = onSignOutGoogle,
-                vmUsers = vmUsers,
-                vmProfiles=vmProfiles
-            )
-        }*/
+                composable(route=AppScreen.ProfileUserPhotoEditScreen.route){
+                    EditPhoto(
+                        navController = navController,
+                        auth = authManager,
+                        onSignOutGoogle = onSignOutGoogle,
+                        vmUsers = vmUsers,
+                        vmProfiles=vmProfiles
+                    )
+                }*/
 
     }
 }
