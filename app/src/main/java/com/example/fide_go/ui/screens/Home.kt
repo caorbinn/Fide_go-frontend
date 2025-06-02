@@ -255,7 +255,7 @@ fun BodyContentHome(
         if (businesses.isNotEmpty()) {
             businesses.forEach { business ->
                 BusinessCard(business = business) {
-                    navController.navigate(AppScreen.BussinessScreen.route)
+                    navController.navigate(AppScreen.BussinessScreen.createRoute(business.id ?: ""))
                 }
                 Spacer(modifier = Modifier.height(24.dp))
             }

@@ -24,4 +24,7 @@ interface OffersService {
 
     @DELETE("fide_go/offers/delete/{id}")
     suspend fun deleteOffers(@Path("id") id: String): Response<Boolean>
+
+    @GET("fide_go/offers/byBusiness")
+    suspend fun getOffersByBusiness(@Query("bussinessId") id: String): Response<List<Offers>>
 }

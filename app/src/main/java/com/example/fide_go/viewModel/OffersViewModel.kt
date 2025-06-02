@@ -25,6 +25,9 @@ class OffersViewModel : ViewModel() {
     private val _offerEdit = MutableStateFlow<Offers?>(null)
     val offerEdit: StateFlow<Offers?> = _offerEdit
 
+    private val _offersByBusiness = MutableStateFlow<List<Offers>>(emptyList())
+    val offersByBusiness: StateFlow<List<Offers>> = _offersByBusiness
+
     /**
      * Inserta una nueva oferta en el backend
      */
@@ -107,6 +110,22 @@ class OffersViewModel : ViewModel() {
             } catch (e: Exception) {
                 _offerDeleted.value = false
                 Log.e("Exception", "deleteOfferVM: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getOffersByBusiness(businessId: String) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitApi.offersService.getOffersByBusiness(businessId)
+                if (response.isSuccessful) {
+                    _offersByBusiness.value = response.body() ?: emptyList()
+                } else {
+                    Log.e("Offers", "Error al obtener ofertas por negocio")
+                }
+            } catch (e: Exception) {
+                Log.e("Exception", "getOffersByBusiness: ${e.localizedMessage}")
             }
         }
     }

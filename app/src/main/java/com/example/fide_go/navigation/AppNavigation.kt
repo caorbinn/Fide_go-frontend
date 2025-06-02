@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.fide_go.data.model.Offers
 import com.example.fide_go.ui.screens.Bussiness.BussinessScreen
 import com.example.fide_go.ui.screens.HomeScreen
@@ -120,13 +122,19 @@ fun AppNavigation(
             )
         }
 
-        composable(route=AppScreen.BussinessScreen.route){
+        composable(
+            route = AppScreen.BussinessScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ){ backStackEntry ->
+            val businessId = backStackEntry.arguments?.getString("id") ?: ""
             BussinessScreen(
                 navController = navController,
                 auth= authManager,
                 onSignOutGoogle= onSignOutGoogle,
                 vmUsers = vmUsers,
-                vmBussiness =vmBussiness
+                vmBussiness =vmBussiness,
+                vmOffers = vmOffers,
+                businessId = businessId
             )
         }
 

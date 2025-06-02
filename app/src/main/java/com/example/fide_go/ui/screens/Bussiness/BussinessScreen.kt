@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.fide_go.R
 import com.example.fide_go.data.model.Bussiness
+import com.example.fide_go.data.model.Offers
 import com.example.fide_go.data.model.Email
 import com.example.fide_go.data.model.Phone
 import com.example.fide_go.data.model.Profile
@@ -39,6 +40,7 @@ import com.example.fide_go.ui.theme.TextSizes
 import com.example.fide_go.utils.AuthManager
 import com.example.fide_go.viewModel.BussinessViewModel
 import com.example.fide_go.viewModel.UsersViewModel
+import com.example.fide_go.viewModel.OffersViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +51,9 @@ fun BussinessScreen(
     auth: AuthManager,
     onSignOutGoogle: () -> Unit,
     vmUsers: UsersViewModel,
-    vmBussiness: BussinessViewModel
+    vmBussiness: BussinessViewModel,
+    vmOffers: OffersViewModel,
+    businessId: String
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -63,7 +67,15 @@ fun BussinessScreen(
     }
 
     val userState by vmUsers.user.collectAsState()
-    val isLoading by vmUsers.isLoading.collectAsState()
+    val isLoadingUser by vmUsers.isLoading.collectAsState()
+
+    LaunchedEffect(businessId) {
+        vmBussiness.getBussinessById(businessId)
+        vmOffers.getOffersByBusiness(businessId)
+    }
+
+    val business by vmBussiness.currentBussiness.collectAsState()
+    val offers by vmOffers.offersByBusiness.collectAsState()
 
     if (currentUser?.email != null) {
         val userToInsert = User(
@@ -166,7 +178,7 @@ fun BussinessScreen(
                 .background(AppColors.whitePerlaFide)
                 .padding(24.dp)
         ) {
-            if (isLoading) {
+            if (isLoadingUser) {
                 CircularProgressIndicator(
                     color = AppColors.FocusFide,
                     strokeWidth = 4.dp,
@@ -175,7 +187,7 @@ fun BussinessScreen(
                         .size(48.dp)
                 )
             } else {
-                BodyContentBusiness(navController, vmUsers, userState, vmBussiness)
+                BodyContentBusiness(navController, userState, business, offers)
             }
         }
     }
@@ -185,9 +197,9 @@ fun BussinessScreen(
 @Composable
 fun BodyContentBusiness(
     navController: NavController,
-    vmUsers: UsersViewModel,
     userState: User?,
-    vmBusiness: BussinessViewModel
+    business: Bussiness?,
+    offers: List<Offers>
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
@@ -195,21 +207,38 @@ fun BodyContentBusiness(
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
-            text = "bussiness name",
+            text = business?.bussinessName ?: "",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = AppColors.mainFide
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "bussiness description",
+            text = business?.bussinessDescription ?: "",
             fontSize = 16.sp
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = "Aquí aparecerán las promociones disponibles para este negocio.",
-            fontSize = 18.sp
-        )
+        if (offers.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.available_offers),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = AppColors.mainFide
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            offers.forEach { offer ->
+                Text(
+                    text = "- ${offer.title} - ${offer.points ?: 0} puntos.",
+                    fontSize = 18.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+        } else {
+            Text(
+                text = stringResource(R.string.no_offers),
+                fontSize = 18.sp
+            )
+        }
     }
 }
 
@@ -243,4 +272,3 @@ fun LogoutDialog(
         }
     )
 }
-

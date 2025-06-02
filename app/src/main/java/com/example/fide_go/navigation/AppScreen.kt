@@ -11,7 +11,9 @@ sealed class AppScreen(val route: String){
 
     object HomeScreen: AppScreen("home_screen")
 
-    object BussinessScreen: AppScreen("bussiness_screen")
+    object BussinessScreen: AppScreen("bussiness_screen/{id}"){
+        fun createRoute(id: String) = "bussiness_screen/$id"
+    }
 
     object OffersScreen: AppScreen("offers_screen")
 

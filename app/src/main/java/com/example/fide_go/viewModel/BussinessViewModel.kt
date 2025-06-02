@@ -25,6 +25,9 @@ class BussinessViewModel : ViewModel() {
     private val _bussinessAll = MutableStateFlow<List<Bussiness>>(emptyList())
     val listBussiness: StateFlow<List<Bussiness>> = _bussinessAll
 
+    private val _currentBussiness = MutableStateFlow<Bussiness?>(null)
+    val currentBussiness: StateFlow<Bussiness?> = _currentBussiness
+
     /**
      * Actualiza un negocio
      */
@@ -99,6 +102,22 @@ class BussinessViewModel : ViewModel() {
                     _bussinessAll.value = response.body() ?: emptyList()
                 } else {
                     Log.e("Error", "list Bussiness")
+                }
+            } catch (e: Exception) {
+                e.message?.let { Log.e("Exception", it) }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getBussinessById(id: String) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitApi.bussinessService.getBussiness(id)
+                if (response.isSuccessful) {
+                    _currentBussiness.value = response.body()
+                } else {
+                    Log.e("Error", "get Bussiness")
                 }
             } catch (e: Exception) {
                 e.message?.let { Log.e("Exception", it) }

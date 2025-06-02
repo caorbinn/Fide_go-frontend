@@ -30,4 +30,6 @@
     <string name="cancelar">Cancelar</string>
     <string name="bienvenido">Bienvenido</string>
     <string name="navega_por_nuestros_negocios_y_descubre_ofertas_incre_bles_pensadas_para_ti">Navega por nuestros negocios y descubre ofertas increíbles pensadas para ti.</string>
+    <string name="no_offers">No hay ofertas disponibles</string>
+    <string name="available_offers">OFERTAS DISPONIBLES:</string>
 </resources>
