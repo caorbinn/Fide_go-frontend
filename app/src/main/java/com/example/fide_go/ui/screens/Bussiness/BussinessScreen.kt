@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.fide_go.R
 import com.example.fide_go.data.model.Bussiness
 import com.example.fide_go.data.model.Offers
@@ -227,11 +228,19 @@ fun BodyContentBusiness(
             )
             Spacer(modifier = Modifier.height(8.dp))
             offers.forEach { offer ->
-                Text(
-                    text = "- ${offer.title} - ${offer.points ?: 0} puntos.",
-                    fontSize = 18.sp
-                )
-                Spacer(modifier = Modifier.height(4.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    AsyncImage(
+                        model = offer.urlImageOffer,
+                        contentDescription = "Imagen oferta",
+                        modifier = Modifier.size(60.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "${offer.title} - ${offer.points ?: 0} puntos.",
+                        fontSize = 18.sp
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         } else {
             Text(

@@ -8,6 +8,6 @@ data class Offers(
     @SerializedName("description") var description:String?,
     @SerializedName("termsAndConditions") var termsAndConditions:String?,
     @SerializedName("points") var points:Int?,
-    //cambios
-    @SerializedName("bussinessId") var bussinessId:String?
+    @SerializedName("bussinessId") var bussinessId:String?,
+    @SerializedName("urlImageOffer") var urlImageOffer:String?
 )

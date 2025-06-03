@@ -49,6 +49,7 @@ android {
 }
 
 dependencies {
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 
     //coil
     implementation("io.coil-kt:coil-compose:2.5.0")

@@ -1,11 +1,23 @@
 package com.example.fide_go.ui.screens.Offers
 
-// OffersScreen.kt
-
 import android.os.Build
+import android.net.Uri
+import android.webkit.MimeTypeMap
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import com.example.fide_go.data.retrofit.RetrofitApi
+import kotlinx.coroutines.launch
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.Home
@@ -32,6 +44,8 @@ import com.example.fide_go.viewModel.BussinessViewModel
 import com.example.fide_go.ui.theme.AppColors
 import com.example.fide_go.ui.theme.TextSizes
 import com.example.fide_go.ui.screens.LogoutDialog
+import java.util.UUID
+
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -62,8 +76,18 @@ fun OffersScreen(
     var description by remember { mutableStateOf("") }
     var terms by remember { mutableStateOf("") }
     var pointsText by remember { mutableStateOf("") }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var existingImageUrl by remember { mutableStateOf<String?>(null) }
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        imageUri = uri
+    }
 
     val focusManager = LocalFocusManager.current
+
+    // Estado de scroll
+    val scrollState = rememberScrollState()
 
     // Si estamos en modo edición y ya llegó "offerToEdit", precargamos los campos
     LaunchedEffect(offerToEdit) {
@@ -72,6 +96,7 @@ fun OffersScreen(
             description = offer.description.toString()
             terms = offer.termsAndConditions.toString()
             pointsText = offer.points.toString()
+            existingImageUrl = offer.urlImageOffer
         }
     }
 
@@ -81,6 +106,7 @@ fun OffersScreen(
             && terms.isNotBlank()
             && pointsText.toIntOrNull()?.let { it >= 0 } == true
             && selectedBusiness != null
+            && (imageUri != null || existingImageUrl != null)
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -152,7 +178,8 @@ fun OffersScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -222,32 +249,80 @@ fun OffersScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            Button(onClick = { imagePickerLauncher.launch("image/*") }) {
+                Text("Seleccionar imagen")
+            }
+
+            imageUri?.let { uri ->
+                AsyncImage(
+                    model = uri,
+                    contentDescription = "Imagen seleccionada",
+                    modifier = Modifier.height(150.dp)
+                )
+            } ?: existingImageUrl?.let { url ->
+                AsyncImage(
+                    model = url,
+                    contentDescription = "Imagen actual",
+                    modifier = Modifier.height(150.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             Button(
                 onClick = {
-                    // Creamos la instancia de Offers con todos sus parámetros:
-                    val oferta = Offers(
-                        id = offerToEdit?.id
-                            ?: "123456",    // Si estamos editando, mantiene el ID; si no, pone "123456"
-                        title = title.trim(),
-                        description = description.trim(),
-                        termsAndConditions = terms.trim(),
-                        points = pointsText.toIntOrNull() ?: 0,
-                        bussinessId = selectedBusiness?.id
-                    )
+                    coroutineScope.launch {
+                        var uploadedUrl = existingImageUrl
+                        imageUri?.let { uri ->
+                            // Abrimos el InputStream y leemos los bytes de la imagen
+                            val inputStream = context.contentResolver.openInputStream(uri)
+                            val bytes = inputStream?.readBytes() ?: ByteArray(0)
 
-                    if (isEditMode) {
-                        vmOffers.updateOfferVM(oferta)
-                    } else {
-                        vmOffers.insertOfferVM(oferta)
+                            // Obtenemos el tipo MIME y, a partir de él, la extensión (ej. "jpg", "png", etc.)
+                            val mimeType = context.contentResolver.getType(uri)
+                            val extension = mimeType?.let {
+                                MimeTypeMap.getSingleton().getExtensionFromMimeType(it)
+                            } ?: "jpg"
+
+                            // Generamos un nombre único para el archivo: UUID + extensión
+                            val uniqueFilename = "${UUID.randomUUID()}.$extension"
+
+                            // Creamos el RequestBody y el MultipartBody.Part con el nombre único
+                            val requestBody = bytes.toRequestBody("image/*".toMediaTypeOrNull())
+                            val body = MultipartBody.Part.createFormData("file", uniqueFilename, requestBody)
+
+                            val response = RetrofitApi.imageService.uploadImage(body)
+                            if (response.isSuccessful) {
+                                uploadedUrl = response.body()
+                            }
+                        }
+
+                        val oferta = Offers(
+                            id = offerToEdit?.id ?: "123456",
+                            title = title.trim(),
+                            description = description.trim(),
+                            termsAndConditions = terms.trim(),
+                            points = pointsText.toIntOrNull() ?: 0,
+                            bussinessId = selectedBusiness?.id,
+                            urlImageOffer = uploadedUrl
+                        )
+
+                        if (isEditMode) {
+                            vmOffers.updateOfferVM(oferta)
+                        } else {
+                            vmOffers.insertOfferVM(oferta)
+                        }
+
+                        // Limpiar estados
+                        title = ""
+                        description = ""
+                        terms = ""
+                        pointsText = ""
+                        selectedBusiness = null
+                        imageUri = null
+                        existingImageUrl = null
+                        focusManager.clearFocus()
                     }
-
-                    // Limpiamos campos y quitamos foco
-                    title = ""
-                    description = ""
-                    terms = ""
-                    pointsText = ""
-                    selectedBusiness = null
-                    focusManager.clearFocus()
                 },
                 enabled = isFormValid,
                 modifier = Modifier
@@ -256,7 +331,6 @@ fun OffersScreen(
             ) {
                 Text(text = if (isEditMode) "Actualizar oferta" else "Publicar oferta")
             }
-
 
             // Mensajes de éxito/fracaso (opcional)
             insertedState?.let { success ->
