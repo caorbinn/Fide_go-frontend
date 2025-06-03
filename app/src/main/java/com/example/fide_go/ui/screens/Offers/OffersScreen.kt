@@ -298,13 +298,13 @@ fun OffersScreen(
                         }
 
                         val oferta = Offers(
-                            id = offerToEdit?.id ?: "123456",
+                            id = offerToEdit?.id ?: UUID.randomUUID().toString(),
                             title = title.trim(),
                             description = description.trim(),
                             termsAndConditions = terms.trim(),
                             points = pointsText.toIntOrNull() ?: 0,
                             bussinessId = selectedBusiness?.id,
-                            urlImageOffer = uploadedUrl
+                            urlImageOffer = "https://dkhmzp0m-8000.uks1.devtunnels.ms" + uploadedUrl
                         )
 
                         if (isEditMode) {
@@ -322,6 +322,7 @@ fun OffersScreen(
                         imageUri = null
                         existingImageUrl = null
                         focusManager.clearFocus()
+                        vmOffers.clearStates()
                     }
                 },
                 enabled = isFormValid,

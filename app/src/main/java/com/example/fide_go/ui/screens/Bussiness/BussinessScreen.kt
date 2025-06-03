@@ -5,7 +5,11 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.Home
@@ -19,7 +23,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -203,10 +209,12 @@ fun BodyContentBusiness(
     offers: List<Offers>
 ) {
     Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
+        Spacer(modifier = Modifier.height(40.dp))
+        // Encabezado del negocio
         Text(
             text = business?.bussinessName ?: "",
             fontSize = 24.sp,
@@ -216,9 +224,11 @@ fun BodyContentBusiness(
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = business?.bussinessDescription ?: "",
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            color = Color.DarkGray
         )
         Spacer(modifier = Modifier.height(24.dp))
+
         if (offers.isNotEmpty()) {
             Text(
                 text = stringResource(R.string.available_offers),
@@ -227,29 +237,86 @@ fun BodyContentBusiness(
                 color = AppColors.mainFide
             )
             Spacer(modifier = Modifier.height(8.dp))
-            offers.forEach { offer ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    AsyncImage(
-                        model = offer.urlImageOffer,
-                        contentDescription = "Imagen oferta",
-                        modifier = Modifier.size(60.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "${offer.title} - ${offer.points ?: 0} puntos.",
-                        fontSize = 18.sp
-                    )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(offers) { offer ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                // Navegar al detalle de la oferta si es necesario
+                                // navController.navigate("offerDetail/${offer.id}")
+                            },
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Imagen de la oferta
+                            AsyncImage(
+                                model = offer.urlImageOffer,
+                                contentDescription = "Imagen de la oferta",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                            )
+
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                // Título de la oferta
+                                Text(
+                                    text = offer.title,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                // Puntos en negrita y tamaño mayor
+                                Text(
+                                    text = "${offer.points ?: 0} puntos",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+                                // Opcional: descripción breve debajo
+                                offer.description?.let { desc ->
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = desc,
+                                        fontSize = 14.sp,
+                                        color = Color.Gray,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
         } else {
             Text(
                 text = stringResource(R.string.no_offers),
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                color = Color.Gray
             )
         }
     }
 }
+
 
 
 @Composable

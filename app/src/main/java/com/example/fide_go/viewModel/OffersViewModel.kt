@@ -28,6 +28,12 @@ class OffersViewModel : ViewModel() {
     private val _offersByBusiness = MutableStateFlow<List<Offers>>(emptyList())
     val offersByBusiness: StateFlow<List<Offers>> = _offersByBusiness
 
+    fun clearStates() {
+        _offerInserted.value = null
+        _offerUpdated.value = null
+        _offerDeleted.value = null
+    }
+
     /**
      * Inserta una nueva oferta en el backend
      */
