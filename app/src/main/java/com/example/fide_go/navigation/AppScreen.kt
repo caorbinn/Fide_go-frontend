@@ -17,6 +17,9 @@ sealed class AppScreen(val route: String){
 
     object OffersScreen: AppScreen("offers_screen")
 
+    //Pantalla para editar los datos básicos del perfil del usuario
+    object EditProfileScreen: AppScreen("edit_profile_screen")
+
     /*
 
     object RegisterPhoneScreen: AppScreen("register_phone")

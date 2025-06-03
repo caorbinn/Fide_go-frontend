@@ -16,6 +16,7 @@ import com.example.fide_go.ui.screens.LoginAndRegister.ForgotPasswordScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.LoginScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.RegisterScreen
 import com.example.fide_go.ui.screens.Offers.OffersScreen
+import com.example.fide_go.ui.screens.EditProfileScreen
 /*
 import com.example.fide_go.ui.screens.Search.FindByEmailScreen
 import com.example.fide_go.ui.screens.Search.FindByPhoneScreen
@@ -119,6 +120,16 @@ fun AppNavigation(
                 onSignOutGoogle= onSignOutGoogle,
                 vmUsers= vmUsers,
                 vmBussiness =  vmBussiness
+            )
+        }
+
+        composable(route=AppScreen.EditProfileScreen.route){
+            EditProfileScreen(
+                navController = navController,
+                auth = authManager,
+                vmUsers = vmUsers,
+                vmPhones = vmPhones,
+                vmEmails = vmEmails
             )
         }
 
