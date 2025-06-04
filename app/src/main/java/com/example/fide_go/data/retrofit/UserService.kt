@@ -1,5 +1,6 @@
 package com.example.fide_go.data.retrofit
 
+import com.example.fide_go.data.model.Offers
 import com.example.fide_go.data.model.User
 import retrofit2.Response
 import retrofit2.http.Body
@@ -35,7 +36,13 @@ interface UserService {
     @POST("fide_go/users/answer_math_challenge")
     suspend fun answerMathChallenge(
         @Query("answer") answer: Int,
-        @Body user: User)
-    : Response<Boolean>
+        @Body user: User
+    ): Response<Boolean>
+
+    @POST("fide_go/users/redeemOffer/{userId}")
+    suspend fun redeemOffer(
+        @Path("userId") userId: String,
+        @Body offer: Offers
+    ): Response<String>
 
 }

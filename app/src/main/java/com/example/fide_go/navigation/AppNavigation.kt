@@ -187,6 +187,8 @@ fun AppNavigation(
                 navController = navController,
                 auth = authManager,
                 onSignOutGoogle = onSignOutGoogle,
+                vmUsers = vmUsers,
+                vmOffers = vmOffers,
                 offerId = offerId
             )
         }

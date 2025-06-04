@@ -125,10 +125,11 @@ fun BussinessScreen(
              *  Solo cuatro parámetros, en ese orden exacto.
              */
             Profile(
-                null,
-                "",
-                currentUser.photoUrl.toString(),
-                null
+                id               = null,
+                description      = "",                       // o algún texto por defecto
+                urlImageProfile  = currentUser.photoUrl.toString(),
+                dateBirth        = null,                     // si no tienes fecha de nacimiento aún
+                pointsUser       = 0                         // arrancamos con 0 puntos
             ),
 
             /* businessId */   null
@@ -157,9 +158,10 @@ fun BussinessScreen(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        currentUser?.photoUrl?.toString()?.let { photoUrl ->
-                            ClickableProfileImage(navController, photoUrl) { }
-                        }
+                        //currentUser?.photoUrl?.toString()?.let {
+                        //ClickableProfileImage(navController, it) { }
+                        //}
+
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Text(
@@ -177,7 +179,17 @@ fun BussinessScreen(
                                 overflow = TextOverflow.Ellipsis,
                                 color = AppColors.whitePerlaFide
                             )
+
                         }
+
+                        Spacer(modifier = Modifier.width(100.dp))
+
+                        Text("Puntos: ${userState?.profile?.pointsUser ?: 0}",
+                            fontSize = TextSizes.Footer,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = AppColors.whitePerlaFide
+                        )
                     }
                 },
                 actions = {
@@ -312,68 +324,84 @@ fun BodyContentBusiness(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items(offers) { offer ->
-                    Card(
+                    // Asegúrate de envolver el Card en un Box con padding exterior
+// para que la sombra no se recorte. Solo copia y pega esto donde necesites:
+
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                // Navegar al detalle de la oferta si es necesario
-                                // navController.navigate("offerDetail/${offer.id}")
-                            },
-                        shape = RoundedCornerShape(12.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                            .padding(vertical = 16.dp) // espacio alrededor para la sombra
                     ) {
-                        Row(
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                // Altura mínima para que nunca se vea demasiado “apretado”
+                                .defaultMinSize(minHeight = 120.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
                         ) {
-                            // Imagen de la oferta
-                            AsyncImage(
-                                model = offer.urlImageOffer,
-                                contentDescription = "Imagen de la oferta",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(80.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-
-                            Spacer(modifier = Modifier.width(16.dp))
-
                             Column(
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White)
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.SpaceBetween // reparte contenido para que el texto largo baje
                             ) {
-                                // Título de la oferta
-                                Text(
-                                    text = offer.title,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                // Puntos en negrita y tamaño mayor
-                                Text(
-                                    text = "${offer.points ?: 0} puntos",
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
-                                // Descripción breve opcional
+                                // Fila superior: imagen + título + puntos
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    AsyncImage(
+                                        model = offer.urlImageOffer,
+                                        contentDescription = "Imagen de la oferta",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(80.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                    )
+
+                                    Spacer(modifier = Modifier.width(16.dp))
+
+                                    Column(
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Text(
+                                            text = offer.title,
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.Black,
+                                            maxLines = 3,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+
+                                        Spacer(modifier = Modifier.height(4.dp))
+
+                                        Text(
+                                            text = "${offer.points ?: 0} puntos",
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.Black
+                                        )
+                                    }
+                                }
+
+                                // Descripción (si existe), limitada a 2 líneas
                                 offer.description?.let { desc ->
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
                                         text = desc,
                                         fontSize = 14.sp,
                                         color = Color.Gray,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis
+                                        maxLines = 3,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.fillMaxWidth()
                                     )
                                 }
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
+                                // Botones al pie del Card
                                 if (userState?.admin == true) {
                                     Row(
                                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -393,12 +421,9 @@ fun BodyContentBusiness(
                                         ) {
                                             Text("Editar")
                                         }
+
                                         Button(
-                                            onClick = {
-                                                // Cuando el usuario pulsa “Eliminar”,
-                                                // invocamos la lambda que viene de BussinessScreen
-                                                offer.id?.let { onDeleteClick(it) }
-                                            },
+                                            onClick = { offer.id?.let { onDeleteClick(it) } },
                                             modifier = Modifier.weight(1f),
                                             contentPadding = PaddingValues(4.dp)
                                         ) {
@@ -417,12 +442,13 @@ fun BodyContentBusiness(
                                         modifier = Modifier.fillMaxWidth(),
                                         contentPadding = PaddingValues(4.dp)
                                     ) {
-                                        Text("Canjear")
+                                        Text("Abrir Cupón")
                                     }
                                 }
                             }
                         }
                     }
+
                 }
             }
         } else {

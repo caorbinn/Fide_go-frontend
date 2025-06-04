@@ -67,7 +67,7 @@ fun HomeScreen(
             currentUser.displayName.orEmpty(),
             Phone(null, currentUser.phoneNumber.orEmpty(), false, null),
             Email(null, currentUser.email.orEmpty(), false, null),
-            Profile(null, "", currentUser.photoUrl.toString(), null),
+            Profile(null, "", currentUser.photoUrl.toString(),null, 0),
             null // manteniendo todo igual, se asume false por defecto o según backend
         )
         LaunchedEffect(Unit) {
@@ -93,9 +93,9 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        currentUser?.photoUrl?.toString()?.let {
-                            ClickableProfileImage(navController, it) { }
-                        }
+                        //currentUser?.photoUrl?.toString()?.let {
+                            //ClickableProfileImage(navController, it) { }
+                        //}
 
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
@@ -114,7 +114,17 @@ fun HomeScreen(
                                 overflow = TextOverflow.Ellipsis,
                                 color = AppColors.whitePerlaFide
                             )
+
                         }
+
+                        Spacer(modifier = Modifier.width(100.dp))
+
+                        Text("Puntos: ${userState?.profile?.pointsUser ?: 0}",
+                            fontSize = TextSizes.Footer,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = AppColors.whitePerlaFide
+                        )
                     }
                 },
                 actions = {

@@ -1,20 +1,17 @@
 package com.example.fide_go.viewModel
 
-
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.fide_go.data.model.Offers
 import com.example.fide_go.data.model.Profile
 import com.example.fide_go.data.model.User
-import com.example.fide_go.data.retrofit.RetrofitApi
 import com.example.fide_go.data.retrofit.RetrofitApi.userService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
 
 class UsersViewModel : ViewModel() {
     private val _user = MutableStateFlow<User?>(null)
@@ -35,8 +32,11 @@ class UsersViewModel : ViewModel() {
     private val _userEdit = MutableStateFlow<User?>(null)
     val userEdit: StateFlow<User?> = _userEdit
 
-    private val _findString=MutableStateFlow<String?>(null)
+    private val _findString = MutableStateFlow<String?>(null)
     val findString: StateFlow<String?> = _findString
+
+    private val _redeemCode = MutableStateFlow<String?>(null)
+    val redeemCode: StateFlow<String?> = _redeemCode
 
     // Variable que representa el estado de carga
     private val _isLoading = MutableStateFlow(false)
@@ -50,14 +50,13 @@ class UsersViewModel : ViewModel() {
     private val _isLoadingRegister = MutableStateFlow(false)
     val isLoadingRegister: StateFlow<Boolean> = _isLoadingRegister
 
-
     //CRUD USER
     /**
      * Esta funcion recibe un User y lo inserta en la base de datos
      */
 
-    suspend fun insertUserVm(user:User): Boolean {
-        _isLoadingRegister.value= true
+    suspend fun insertUserVm(user: User): Boolean {
+        _isLoadingRegister.value = true
         return try {
             val response = userService.insertUser(user)
             if (response.isSuccessful) {
@@ -70,7 +69,6 @@ class UsersViewModel : ViewModel() {
                 false
             }
         } catch (e: Exception) {
-            // Manejar errores de red u otros errores
             e.message?.let { Log.e("error catch userViewModel insert User", it) }
             false
         }
@@ -90,17 +88,14 @@ class UsersViewModel : ViewModel() {
                     _isLoading.value = false
                 } else {
                     Log.e("error en userViewModel", "getUserByEmail")
-                    //_isLoading.value = false
                 }
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch userViewModel getUserByEmail", it) }
             }
         }
     }
 
     //BUSQUEDAS
-
 
     //FUNCIONES VALIDACIONES
 
@@ -127,12 +122,10 @@ class UsersViewModel : ViewModel() {
                     Log.e("error en userViewModel", "toDoCallByUser else")
                 }
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch userViewModel toDoCallByUser try", it) }
             }
         }
     }
-
 
     /**
      * Esta funcion recibe la respuesta matematica y actualiza su variable si es correcta
@@ -141,17 +134,15 @@ class UsersViewModel : ViewModel() {
     fun answerMathByUser(answer: Int, user: User) {
         viewModelScope.launch {
             try {
-                val response = userService.answerMathChallenge(answer,user)
+                val response = userService.answerMathChallenge(answer, user)
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    if (responseBody==true) {
+                    if (responseBody == true) {
                         _answerValidation.value = responseBody
-                        //si la respuesta es true, actualizao al usuario desde la base de datos
                         getUserByEmail(user.email.email)
                         Log.e("respuesta validacion", "bien")
                     } else {
                         _answerValidation.value = responseBody
-                        //si la respuesta es true, actualizao al usuario desde la base de datos
                         getUserByEmail(user.email.email)
                         Log.e("error en userViewModel", "la respuesta no es correcta")
                     }
@@ -159,12 +150,10 @@ class UsersViewModel : ViewModel() {
                     Log.e("error en userViewModel", "answerMathByUser")
                 }
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch userViewModel answerMathByUser try", it) }
             }
         }
     }
-
 
     /**
      * Esta funcion niega la validacion 1
@@ -172,9 +161,8 @@ class UsersViewModel : ViewModel() {
     fun validationOneNegative() {
         viewModelScope.launch {
             try {
-                _validationOne.value=false
+                _validationOne.value = false
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch userViewModel validationOneNegative", it) }
             }
         }
@@ -186,20 +174,18 @@ class UsersViewModel : ViewModel() {
     fun validationOneCheckNegative() {
         viewModelScope.launch {
             try {
-                _answerValidation.value=null
+                _answerValidation.value = null
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch userViewModel validationOneCheckNegative", it) }
             }
         }
     }
 
-
     /**
      * Esta funcion recibe un User y lo actualiza
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    fun updateUserVM(user:User) {
+    fun updateUserVM(user: User) {
         viewModelScope.launch {
             try {
                 val response = userService.updateUser(user)
@@ -209,13 +195,32 @@ class UsersViewModel : ViewModel() {
                     Log.e("error en userViewModel", "update user")
                 }
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch userViewModel update", it) }
             }
         }
     }
 
-
+    /**
+     * Redeem an offer for the given user
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun redeemOfferVM(userId: String, offer: Offers) {
+        viewModelScope.launch {
+            try {
+                val response = userService.redeemOffer(userId, offer)
+                if (response.isSuccessful) {
+                    _redeemCode.value = response.body()
+                    _user.value?.email?.email?.let { getUserByEmail(it) }
+                } else {
+                    _redeemCode.value = null
+                    Log.e("error", "redeemOfferVM")
+                }
+            } catch (e: Exception) {
+                _redeemCode.value = null
+                e.message?.let { Log.e("error redeemOfferVM", it) }
+            }
+        }
+    }
 
     /**
      * Esta funcion recibe un User y lo guarda
@@ -231,12 +236,10 @@ class UsersViewModel : ViewModel() {
                     Log.e("error en userViewModel", "edit user")
                 }
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch userViewModel edit", it) }
             }
         }
     }
-
 
     /**
      * Esta funcion pone a nulo el userEdit
@@ -246,7 +249,6 @@ class UsersViewModel : ViewModel() {
             try {
                 _userEdit.value = null
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch userViewModel edit null", it) }
             }
         }
@@ -260,7 +262,6 @@ class UsersViewModel : ViewModel() {
             try {
                 _findString.value = find
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch save find string", it) }
             }
         }
@@ -274,10 +275,8 @@ class UsersViewModel : ViewModel() {
             try {
                 _findString.value = null
             } catch (e: Exception) {
-                // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch to null find string", it) }
             }
         }
     }
-
 }

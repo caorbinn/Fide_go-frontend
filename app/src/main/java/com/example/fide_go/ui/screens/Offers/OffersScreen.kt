@@ -302,7 +302,8 @@ fun OffersScreen(
                             termsAndConditions = terms.trim(),
                             points = pointsText.toIntOrNull() ?: 0,
                             bussinessId = selectedBusiness?.id,
-                            urlImageOffer = "https://dkhmzp0m-8000.uks1.devtunnels.ms" + uploadedUrl
+                            urlImageOffer = "https://dkhmzp0m-8000.uks1.devtunnels.ms" + uploadedUrl,
+                            redeemCode = null
                         )
 
                         if (isEditMode) {

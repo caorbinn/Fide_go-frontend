@@ -9,5 +9,6 @@ data class Offers(
     @SerializedName("termsAndConditions") var termsAndConditions:String?,
     @SerializedName("points") var points:Int?,
     @SerializedName("bussinessId") var bussinessId:String?,
-    @SerializedName("urlImageOffer") var urlImageOffer:String?
+    @SerializedName("urlImageOffer") var urlImageOffer:String?,
+    @SerializedName("redeemCode") var redeemCode: String?
 )
