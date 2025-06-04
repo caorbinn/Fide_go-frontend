@@ -208,7 +208,7 @@ fun BodyContentHome(
         if (userState?.admin == true) {
             Button(
                 onClick = {
-                    // Navegar a la pantalla de edición de ofertas
+                    // Navegar a la pantalla de creacion de ofertas
                     navController.navigate(AppScreen.OffersScreen.route)
                 },
                 modifier = Modifier
@@ -219,7 +219,7 @@ fun BodyContentHome(
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide)
             ) {
                 Text(
-                    text = "Editar ofertas",
+                    text = "Crear ofertas",
                     color = AppColors.whitePerlaFide,
                     style = MaterialTheme.typography.titleMedium
                 )
@@ -381,7 +381,12 @@ fun LogoutDialog(
         containerColor = AppColors.whitePerlaFide,
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.cerrar_sesi_n), color = AppColors.mainFide) },
-        text = { Text(stringResource(R.string.est_s_seguro_que_deseas_cerrar_sesi_n), color = AppColors.mainFide) },
+        text = {
+            Text(
+                stringResource(R.string.est_s_seguro_que_deseas_cerrar_sesi_n),
+                color = AppColors.mainFide
+            )
+        },
         confirmButton = {
             Button(
                 onClick = onConfirmLogout,

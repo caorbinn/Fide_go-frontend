@@ -16,6 +16,8 @@ import com.example.fide_go.ui.screens.LoginAndRegister.ForgotPasswordScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.LoginScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.RegisterScreen
 import com.example.fide_go.ui.screens.Offers.OffersScreen
+import com.example.fide_go.ui.screens.Offers.EditOfferScreen
+import com.example.fide_go.ui.screens.Offers.RedeemOfferScreen
 import com.example.fide_go.ui.screens.EditProfileScreen
 /*
 import com.example.fide_go.ui.screens.Search.FindByEmailScreen
@@ -157,6 +159,35 @@ fun AppNavigation(
                 vmUsers = vmUsers,
                 vmOffers = vmOffers,
                 vmBussiness = vmBussiness
+            )
+        }
+
+        composable(
+            route = AppScreen.EditOfferScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ){ backStackEntry ->
+            val offerId = backStackEntry.arguments?.getString("id") ?: ""
+            EditOfferScreen(
+                navController = navController,
+                auth = authManager,
+                onSignOutGoogle = onSignOutGoogle,
+                vmUsers = vmUsers,
+                vmOffers = vmOffers,
+                vmBussiness = vmBussiness,
+                offerId = offerId
+            )
+        }
+
+        composable(
+            route = AppScreen.RedeemOfferScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ){ backStackEntry ->
+            val offerId = backStackEntry.arguments?.getString("id") ?: ""
+            RedeemOfferScreen(
+                navController = navController,
+                auth = authManager,
+                onSignOutGoogle = onSignOutGoogle,
+                offerId = offerId
             )
         }
         /*
@@ -394,6 +425,5 @@ fun AppNavigation(
                         vmProfiles=vmProfiles
                     )
                 }*/
-
     }
 }

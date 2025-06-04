@@ -1,6 +1,5 @@
 package com.example.fide_go.ui.screens.Bussiness
 
-import android.graphics.fonts.FontStyle
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
@@ -14,12 +13,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.*
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,9 +48,10 @@ import com.example.fide_go.ui.theme.AppColors
 import com.example.fide_go.ui.theme.TextSizes
 import com.example.fide_go.utils.AuthManager
 import com.example.fide_go.viewModel.BussinessViewModel
-import com.example.fide_go.viewModel.UsersViewModel
 import com.example.fide_go.viewModel.OffersViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fide_go.viewModel.UsersViewModel
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -63,6 +66,11 @@ fun BussinessScreen(
     businessId: String
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    // Estado para controlar la oferta seleccionada para borrado
+    var showDeleteDialogForOfferId by remember { mutableStateOf<String?>(null) }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     val currentUser = auth.getCurrentUser()
 
@@ -84,14 +92,46 @@ fun BussinessScreen(
     val business by vmBussiness.currentBussiness.collectAsState()
     val offers by vmOffers.offersByBusiness.collectAsState()
 
+    // ─── Construcción de User (pasando argumentos por posición) ───
     if (currentUser?.email != null) {
         val userToInsert = User(
-            null,
-            currentUser.displayName.orEmpty(),
-            Phone(null, currentUser.phoneNumber.orEmpty(), false, null),
-            Email(null, currentUser.email.orEmpty(), false, null),
-            Profile(null, "", currentUser.photoUrl.toString(), null),
-            null
+            /*   id    */      null,
+            /*username*/      currentUser.displayName.orEmpty(),
+
+            /*  Phone(id: String?, phone: String, verified: Boolean, userId: String?)  */
+            Phone(
+                null,
+                currentUser.phoneNumber.orEmpty(),
+                false,
+                null
+            ),
+
+            /*  Email(id: String?, email: String, verified: Boolean, userId: String?)  */
+            Email(
+                null,
+                currentUser.email.orEmpty(),
+                false,
+                null
+            ),
+
+            /*
+             *  Profile(
+             *    id: String?,
+             *    description: String,
+             *    urlImageProfile: String,
+             *    dateBirth: LocalDate?
+             *  )
+             *
+             *  Solo cuatro parámetros, en ese orden exacto.
+             */
+            Profile(
+                null,
+                "",
+                currentUser.photoUrl.toString(),
+                null
+            ),
+
+            /* businessId */   null
         )
         LaunchedEffect(Unit) {
             vmUsers.insertUserVm(userToInsert)
@@ -106,7 +146,9 @@ fun BussinessScreen(
             popUpTo(AppScreen.HomeScreen.route) { inclusive = true }
         }
     }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.mainFide),
@@ -115,10 +157,9 @@ fun BussinessScreen(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        currentUser?.photoUrl?.toString()?.let {
-                            ClickableProfileImage(navController, it) { }
+                        currentUser?.photoUrl?.toString()?.let { photoUrl ->
+                            ClickableProfileImage(navController, photoUrl) { }
                         }
-
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Text(
@@ -140,9 +181,7 @@ fun BussinessScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        navController.navigate(AppScreen.HomeScreen.route)
-                    }) {
+                    IconButton(onClick = { navController.navigate(AppScreen.HomeScreen.route) }) {
                         Icon(Icons.Outlined.Home, contentDescription = "Home", tint = AppColors.whitePerlaFide)
                     }
                     IconButton(onClick = { showDialog = true }) {
@@ -177,6 +216,20 @@ fun BussinessScreen(
                     onDismiss = { showDialog = false }
                 )
             }
+            if (showDeleteDialogForOfferId != null) {
+                DeleteOfferDialog(
+                    onConfirm = {
+                        showDeleteDialogForOfferId?.let { id ->
+                            vmOffers.deleteOfferVM(id)
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Cupón eliminado correctamente")
+                            }
+                        }
+                        showDeleteDialogForOfferId = null
+                    },
+                    onDismiss = { showDeleteDialogForOfferId = null }
+                )
+            }
         }
 
         Box(
@@ -194,19 +247,35 @@ fun BussinessScreen(
                         .size(48.dp)
                 )
             } else {
-                BodyContentBusiness(navController, userState, business, offers)
+                BodyContentBusiness(
+                    navController = navController,
+                    userState = userState,
+                    business = business,
+                    offers = offers,
+                    vmOffers = vmOffers,
+                    // ─── Pasamos estado y callback ───
+                    showDeleteDialogForOfferId = showDeleteDialogForOfferId,
+                    onDeleteClick = { offerId ->
+                        showDeleteDialogForOfferId = offerId
+                    }
+                )
             }
         }
     }
 }
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BodyContentBusiness(
     navController: NavController,
     userState: User?,
     business: Bussiness?,
-    offers: List<Offers>
+    offers: List<Offers>,
+    vmOffers: OffersViewModel,
+
+    // ─── Nuevos parámetros que recibe este composable ───
+    showDeleteDialogForOfferId: String?,
+    onDeleteClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -291,7 +360,7 @@ fun BodyContentBusiness(
                                     fontWeight = FontWeight.Bold,
                                     color = Color.Black
                                 )
-                                // Opcional: descripción breve debajo
+                                // Descripción breve opcional
                                 offer.description?.let { desc ->
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
@@ -301,6 +370,55 @@ fun BodyContentBusiness(
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis
                                     )
+                                }
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                if (userState?.admin == true) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Button(
+                                            onClick = {
+                                                offer.id?.let { vmOffers.saveOfferEditVM(it) }
+                                                offer.id?.let {
+                                                    navController.navigate(
+                                                        AppScreen.EditOfferScreen.createRoute(it)
+                                                    )
+                                                }
+                                            },
+                                            modifier = Modifier.weight(1f),
+                                            contentPadding = PaddingValues(4.dp)
+                                        ) {
+                                            Text("Editar")
+                                        }
+                                        Button(
+                                            onClick = {
+                                                // Cuando el usuario pulsa “Eliminar”,
+                                                // invocamos la lambda que viene de BussinessScreen
+                                                offer.id?.let { onDeleteClick(it) }
+                                            },
+                                            modifier = Modifier.weight(1f),
+                                            contentPadding = PaddingValues(4.dp)
+                                        ) {
+                                            Text("Eliminar")
+                                        }
+                                    }
+                                } else {
+                                    Button(
+                                        onClick = {
+                                            offer.id?.let {
+                                                navController.navigate(
+                                                    AppScreen.RedeemOfferScreen.createRoute(it)
+                                                )
+                                            }
+                                        },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentPadding = PaddingValues(4.dp)
+                                    ) {
+                                        Text("Canjear")
+                                    }
                                 }
                             }
                         }
@@ -316,8 +434,6 @@ fun BodyContentBusiness(
         }
     }
 }
-
-
 
 @Composable
 fun LogoutDialog(
@@ -344,6 +460,35 @@ fun LogoutDialog(
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = AppColors.FocusFide)
             ) {
                 Text(stringResource(R.string.cancelar))
+            }
+        }
+    )
+}
+
+@Composable
+fun DeleteOfferDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        containerColor = AppColors.whitePerlaFide,
+        onDismissRequest = onDismiss,
+        title = { Text("¿Está seguro de eliminar cupón?", color = AppColors.mainFide) },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide)
+            ) {
+                Text("Sí", color = AppColors.whitePerlaFide)
+            }
+        },
+        dismissButton = {
+            OutlinedButton(
+                onClick = onDismiss,
+                border = BorderStroke(1.dp, AppColors.FocusFide),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = AppColors.FocusFide)
+            ) {
+                Text("No")
             }
         }
     )
