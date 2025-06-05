@@ -58,11 +58,12 @@ fun OffersScreen(
     vmBussiness: BussinessViewModel,
     isEditMode: Boolean = false
 ) {
-    // IMPORTANTE: utilizamos "initial = null" para que el compilador sepa el valor inicial
+    // Estados de la oferta en edición
     val offerToEdit by vmOffers.offerEdit.collectAsState(initial = null)
     val insertedState by vmOffers.offerInserted.collectAsState(initial = null)
     val updatedState by vmOffers.offerUpdated.collectAsState(initial = null)
 
+    // Negocios disponibles y el negocio seleccionado
     val businessList by vmBussiness.listBussiness.collectAsState()
     var selectedBusiness by remember { mutableStateOf<Bussiness?>(null) }
     var expanded by remember { mutableStateOf(false) }
@@ -71,7 +72,7 @@ fun OffersScreen(
         vmBussiness.getListBussiness()
     }
 
-    // Estados locales para los campos
+    // Campos del formulario
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var terms by remember { mutableStateOf("") }
@@ -85,22 +86,23 @@ fun OffersScreen(
     }
 
     val focusManager = LocalFocusManager.current
-
-    // Estado de scroll
     val scrollState = rememberScrollState()
 
-    // Si estamos en modo edición y ya llegó "offerToEdit", precargamos los campos
-    LaunchedEffect(offerToEdit) {
+    // Pre‑carga de campos y negocio cuando se edita una oferta
+    LaunchedEffect(offerToEdit, businessList) {
         offerToEdit?.let { offer ->
             title = offer.title
             description = offer.description.toString()
             terms = offer.termsAndConditions.toString()
             pointsText = offer.points.toString()
             existingImageUrl = offer.urlImageOffer
+            if (selectedBusiness == null) {
+                selectedBusiness = businessList.find { it.id == offer.bussinessId }
+            }
         }
     }
 
-    // Validación sencilla: todos los campos con algo y puntos >= 0
+    // Validación básica del formulario
     val isFormValid = title.isNotBlank()
             && description.isNotBlank()
             && terms.isNotBlank()
@@ -274,20 +276,16 @@ fun OffersScreen(
                     coroutineScope.launch {
                         var uploadedUrl = existingImageUrl
                         imageUri?.let { uri ->
-                            // Abrimos el InputStream y leemos los bytes de la imagen
                             val inputStream = context.contentResolver.openInputStream(uri)
                             val bytes = inputStream?.readBytes() ?: ByteArray(0)
 
-                            // Obtenemos el tipo MIME y, a partir de él, la extensión (ej. "jpg", "png", etc.)
                             val mimeType = context.contentResolver.getType(uri)
                             val extension = mimeType?.let {
                                 MimeTypeMap.getSingleton().getExtensionFromMimeType(it)
                             } ?: "jpg"
 
-                            // Generamos un nombre único para el archivo: UUID + extensión
                             val uniqueFilename = "${UUID.randomUUID()}.$extension"
 
-                            // Creamos el RequestBody y el MultipartBody.Part con el nombre único
                             val requestBody = bytes.toRequestBody("image/*".toMediaTypeOrNull())
                             val body = MultipartBody.Part.createFormData("file", uniqueFilename, requestBody)
 
@@ -304,7 +302,8 @@ fun OffersScreen(
                             termsAndConditions = terms.trim(),
                             points = pointsText.toIntOrNull() ?: 0,
                             bussinessId = selectedBusiness?.id,
-                            urlImageOffer = "https://dkhmzp0m-8000.uks1.devtunnels.ms" + uploadedUrl
+                            urlImageOffer = "https://dkhmzp0m-8000.uks1.devtunnels.ms" + uploadedUrl,
+                            redeemCode = null
                         )
 
                         if (isEditMode) {
@@ -333,7 +332,7 @@ fun OffersScreen(
                 Text(text = if (isEditMode) "Actualizar oferta" else "Publicar oferta")
             }
 
-            // Mensajes de éxito/fracaso (opcional)
+            // Mensajes de éxito o error
             insertedState?.let { success ->
                 if (success) {
                     Text(
