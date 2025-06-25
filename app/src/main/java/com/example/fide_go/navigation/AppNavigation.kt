@@ -10,6 +10,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.fide_go.data.model.Offers
+import com.example.fide_go.navigation.AppScreen.AddBussinessScreen
+import com.example.fide_go.ui.screens.Bussiness.AddBussinessScreen
 import com.example.fide_go.ui.screens.Bussiness.BussinessScreen
 import com.example.fide_go.ui.screens.HomeScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.ForgotPasswordScreen
@@ -158,6 +160,17 @@ fun AppNavigation(
                 onSignOutGoogle = onSignOutGoogle,
                 vmUsers = vmUsers,
                 vmOffers = vmOffers,
+                vmBussiness = vmBussiness
+            )
+        }
+
+        //para agregar negocios
+        composable(route=AppScreen.AddBussinessScreen.route){
+            AddBussinessScreen(
+                navController = navController,
+                auth = authManager,
+                onSignOutGoogle = onSignOutGoogle,
+                vmUsers = vmUsers,
                 vmBussiness = vmBussiness
             )
         }

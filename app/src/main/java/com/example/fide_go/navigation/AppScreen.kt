@@ -15,6 +15,8 @@ sealed class AppScreen(val route: String){
         fun createRoute(id: String) = "bussiness_screen/$id"
     }
 
+    object AddBussinessScreen: AppScreen("add_bussiness_screen")
+
     object OffersScreen: AppScreen("offers_screen")
 
     object EditOfferScreen: AppScreen("edit_offer_screen/{id}") {

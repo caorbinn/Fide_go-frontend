@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 @RequiresApi(Build.VERSION_CODES.O)
 object RetrofitApi {
-    private const val BASE_URL = "https://dkhmzp0m-8000.uks1.devtunnels.ms/" // IMPORTANTE: ajustar según tu entorno
+    private const val BASE_URL = "https://5682st0t-8000.uks1.devtunnels.ms/" // IMPORTANTE: ajustar según tu entorno
 
     // Configurar OkHttpClient con tiempos de espera personalizados
     private val okHttpClient = OkHttpClient.Builder()
