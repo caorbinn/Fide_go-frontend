@@ -238,25 +238,28 @@ fun BodyContentHome(
         }
 
 
-        //boton para crear negocios
-        Button(
-            onClick = {
-                navController.navigate(AppScreen.AddBussinessScreen.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .height(48.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
-        ) {
-            Text(
-                text = "Agregar negocio",
-                color = AppColors.whitePerlaFide,
-                style = MaterialTheme.typography.titleMedium
-            )
+//boton para crear negocios solo visible para administradores
+        if (userState?.admin == true) {
+            Button(
+                onClick = {
+                    navController.navigate(AppScreen.AddBussinessScreen.route)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .height(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
+            ) {
+                Text(
+                    text = "Agregar negocio",
+                    color = AppColors.whitePerlaFide,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
         }
-        Spacer(modifier = Modifier.height(16.dp))
+
 
 
         // Botón para editar el perfil del usuario
