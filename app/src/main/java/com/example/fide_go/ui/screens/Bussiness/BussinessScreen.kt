@@ -68,6 +68,8 @@ fun BussinessScreen(
     var showDialog by remember { mutableStateOf(false) }
     // Estado para controlar la oferta seleccionada para borrado
     var showDeleteDialogForOfferId by remember { mutableStateOf<String?>(null) }
+    // Estado para mostrar el diálogo de eliminación de negocio
+    var showDeleteBusinessDialog by remember { mutableStateOf(false) }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -242,6 +244,21 @@ fun BussinessScreen(
                     onDismiss = { showDeleteDialogForOfferId = null }
                 )
             }
+            if (showDeleteBusinessDialog) {
+                DeleteBusinessDialog(
+                    onConfirm = {
+                        business?.id?.let { id ->
+                            vmBussiness.deleteBussinessVM(id)
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Negocio eliminado correctamente")
+                            }
+                            navController.popBackStack()
+                        }
+                        showDeleteBusinessDialog = false
+                    },
+                    onDismiss = { showDeleteBusinessDialog = false }
+                )
+            }
         }
 
         Box(
@@ -269,6 +286,9 @@ fun BussinessScreen(
                     showDeleteDialogForOfferId = showDeleteDialogForOfferId,
                     onDeleteClick = { offerId ->
                         showDeleteDialogForOfferId = offerId
+                    },
+                    onDeleteBusinessClick = {
+                        showDeleteBusinessDialog = true
                     }
                 )
             }
@@ -287,7 +307,8 @@ fun BodyContentBusiness(
 
     // ─── Nuevos parámetros que recibe este composable ───
     showDeleteDialogForOfferId: String?,
-    onDeleteClick: (String) -> Unit
+    onDeleteClick: (String) -> Unit,
+    onDeleteBusinessClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -310,6 +331,17 @@ fun BodyContentBusiness(
         )
         Spacer(modifier = Modifier.height(24.dp))
 
+        if (userState?.admin == true) {
+            Button(
+                onClick = onDeleteBusinessClick,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
+            ) {
+                Text("Eliminar Negocio", color = AppColors.whitePerlaFide)
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
         if (offers.isNotEmpty()) {
             Text(
                 text = stringResource(R.string.available_offers),
@@ -325,7 +357,7 @@ fun BodyContentBusiness(
             ) {
                 items(offers) { offer ->
                     // Asegúrate de envolver el Card en un Box con padding exterior
-// para que la sombra no se recorte. Solo copia y pega esto donde necesites:
+                    // para que la sombra no se recorte. Solo copia y pega esto donde necesites:
 
                     Box(
                         modifier = Modifier
@@ -474,7 +506,7 @@ fun LogoutDialog(
         confirmButton = {
             Button(
                 onClick = onConfirmLogout,
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide)
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
             ) {
                 Text(stringResource(R.string.aceptar), color = AppColors.whitePerlaFide)
             }
@@ -483,7 +515,7 @@ fun LogoutDialog(
             OutlinedButton(
                 onClick = onDismiss,
                 border = BorderStroke(1.dp, AppColors.FocusFide),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = AppColors.FocusFide)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = AppColors.FocusFide),
             ) {
                 Text(stringResource(R.string.cancelar))
             }
@@ -503,7 +535,7 @@ fun DeleteOfferDialog(
         confirmButton = {
             Button(
                 onClick = onConfirm,
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide)
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
             ) {
                 Text("Sí", color = AppColors.whitePerlaFide)
             }
@@ -512,7 +544,36 @@ fun DeleteOfferDialog(
             OutlinedButton(
                 onClick = onDismiss,
                 border = BorderStroke(1.dp, AppColors.FocusFide),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = AppColors.FocusFide)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = AppColors.FocusFide),
+            ) {
+                Text("No")
+            }
+        }
+    )
+}
+
+@Composable
+fun DeleteBusinessDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        containerColor = AppColors.whitePerlaFide,
+        onDismissRequest = onDismiss,
+        title = { Text("¿Está seguro de eliminar el negocio?", color = AppColors.mainFide) },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
+            ) {
+                Text("Sí", color = AppColors.whitePerlaFide)
+            }
+        },
+        dismissButton = {
+            OutlinedButton(
+                onClick = onDismiss,
+                border = BorderStroke(1.dp, AppColors.FocusFide),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = AppColors.FocusFide),
             ) {
                 Text("No")
             }
