@@ -15,13 +15,22 @@ sealed class AppScreen(val route: String){
         fun createRoute(id: String) = "bussiness_screen/$id"
     }
 
+    object AddBussinessScreen: AppScreen("add_bussiness_screen")
+
     object OffersScreen: AppScreen("offers_screen")
+
+    object EditOfferScreen: AppScreen("edit_offer_screen/{id}") {
+        fun createRoute(id: String) = "edit_offer_screen/$id"
+    }
+
+    object RedeemOfferScreen: AppScreen("redeem_offer_screen/{id}") {
+        fun createRoute(id: String) = "redeem_offer_screen/$id"
+    }
 
     //Pantalla para editar los datos básicos del perfil del usuario
     object EditProfileScreen: AppScreen("edit_profile_screen")
 
     /*
-
     object RegisterPhoneScreen: AppScreen("register_phone")
 
     object ProfileUserScreen: AppScreen("profile_user")
@@ -67,5 +76,4 @@ sealed class AppScreen(val route: String){
     object ValidationTwoSuccessScreen: AppScreen("validation_two_success")
 
     object InfoValidationsScreen: AppScreen("info_validations")*/
-
 }

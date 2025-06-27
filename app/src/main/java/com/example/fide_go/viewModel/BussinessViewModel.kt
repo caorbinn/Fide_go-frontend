@@ -13,6 +13,9 @@ import kotlinx.coroutines.launch
 
 class BussinessViewModel : ViewModel() {
 
+    private val _bussinessInserted = MutableStateFlow<Boolean?>(null)
+    val bussinessInserted: StateFlow<Boolean?> = _bussinessInserted
+
     private val _bussinessUpdated = MutableStateFlow<Boolean?>(null)
     val bussinessUpdated: StateFlow<Boolean?> = _bussinessUpdated
 
@@ -27,6 +30,22 @@ class BussinessViewModel : ViewModel() {
 
     private val _currentBussiness = MutableStateFlow<Bussiness?>(null)
     val currentBussiness: StateFlow<Bussiness?> = _currentBussiness
+
+    /**
+     * Inserta un nuevo negocio
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun insertBussinessVM(bussiness: Bussiness) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitApi.bussinessService.insertBussiness(bussiness)
+                _bussinessInserted.value = response.isSuccessful && (response.body() == true)
+            } catch (e: Exception) {
+                _bussinessInserted.value = false
+                e.message?.let { Log.e("Exception", it) }
+            }
+        }
+    }
 
     /**
      * Actualiza un negocio
