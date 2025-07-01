@@ -34,6 +34,7 @@ import com.example.fide_go.viewModel.OffersViewModel
 import com.example.fide_go.viewModel.PhonesViewModel
 import com.example.fide_go.viewModel.ProfileViewModel
 import com.example.fide_go.viewModel.UsersViewModel
+import com.example.fide_go.viewModel.PurchaseViewModel
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 import java.io.File
@@ -59,6 +60,7 @@ class MainActivity : ComponentActivity() {
     private val vmProfiles by viewModels<ProfileViewModel>()
     private val vmBussiness by viewModels<BussinessViewModel>()
     private val vmOffers by viewModels<OffersViewModel>()
+    private val vmPurchase by viewModels<PurchaseViewModel>()
 
 
     // Cliente de One-Tap / Google Identity
@@ -142,7 +144,8 @@ class MainActivity : ComponentActivity() {
                         vmEmails = vmEmails,
                         vmProfiles = vmProfiles,
                         vmBussiness = vmBussiness,
-                        vmOffers = vmOffers
+                        vmOffers = vmOffers,
+                        vmPurchase = vmPurchase
                     )
                 }
             }

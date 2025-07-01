@@ -118,7 +118,7 @@ class EmailViewModel: ViewModel()  {
     fun toNullEmailEdit() {
         viewModelScope.launch {
             try {
-               _emailEdit.value = null
+                _emailEdit.value = null
             } catch (e: Exception) {
                 // Manejar errores de red u otros errores
                 e.message?.let { Log.e("error catch emailViewModel edit null", it) }

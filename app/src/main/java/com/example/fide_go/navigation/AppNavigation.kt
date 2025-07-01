@@ -13,6 +13,7 @@ import com.example.fide_go.data.model.Offers
 import com.example.fide_go.navigation.AppScreen.AddBussinessScreen
 import com.example.fide_go.ui.screens.Bussiness.AddBussinessScreen
 import com.example.fide_go.ui.screens.Bussiness.BussinessScreen
+import com.example.fide_go.ui.screens.Scan.ScanQrScreen
 import com.example.fide_go.ui.screens.HomeScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.ForgotPasswordScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.LoginScreen
@@ -61,6 +62,7 @@ import com.example.fide_go.viewModel.EmailViewModel
 import com.example.fide_go.viewModel.OffersViewModel
 import com.example.fide_go.viewModel.PhonesViewModel
 import com.example.fide_go.viewModel.ProfileViewModel
+import com.example.fide_go.viewModel.PurchaseViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -74,7 +76,8 @@ fun AppNavigation(
     vmEmails: EmailViewModel,
     vmProfiles: ProfileViewModel,
     vmBussiness: BussinessViewModel,
-    vmOffers: OffersViewModel
+    vmOffers: OffersViewModel,
+    vmPurchase: PurchaseViewModel
 ) {
     //Aqui se maneja toda la navegacion entre nuestras pantallas
     //This handles all the navigation between our screens.
@@ -172,6 +175,15 @@ fun AppNavigation(
                 onSignOutGoogle = onSignOutGoogle,
                 vmUsers = vmUsers,
                 vmBussiness = vmBussiness
+            )
+        }
+
+        composable(route=AppScreen.ScanQrScreen.route){
+            ScanQrScreen(
+                navController = navController,
+                auth = authManager,
+                vmUsers = vmUsers,
+                vmPurchase = vmPurchase
             )
         }
 

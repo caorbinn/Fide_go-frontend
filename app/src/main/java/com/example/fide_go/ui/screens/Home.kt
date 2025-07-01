@@ -94,7 +94,7 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         //currentUser?.photoUrl?.toString()?.let {
-                            //ClickableProfileImage(navController, it) { }
+                        //ClickableProfileImage(navController, it) { }
                         //}
 
                         Spacer(modifier = Modifier.width(10.dp))
@@ -238,29 +238,42 @@ fun BodyContentHome(
         }
 
 
-//boton para crear negocios solo visible para administradores
-        if (userState?.admin == true) {
-            Button(
-                onClick = {
-                    navController.navigate(AppScreen.AddBussinessScreen.route)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .height(48.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
-            ) {
-                Text(
-                    text = "Agregar negocio",
-                    color = AppColors.whitePerlaFide,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
+        //boton para crear negocios
+        Button(
+            onClick = {
+                navController.navigate(AppScreen.AddBussinessScreen.route)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
+        ) {
+            Text(
+                text = "Agregar negocio",
+                color = AppColors.whitePerlaFide,
+                style = MaterialTheme.typography.titleMedium
+            )
         }
+        Spacer(modifier = Modifier.height(16.dp))
 
-
+        Button(
+            onClick = { navController.navigate(AppScreen.ScanQrScreen.route) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide)
+        ) {
+            Text(
+                text = "Escanear QR",
+                color = AppColors.whitePerlaFide,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Botón para editar el perfil del usuario
         Button(

@@ -172,8 +172,8 @@ fun RegisterScreen(
                         Text(
                             text = stringResource(R.string.nombre),
                             fontSize = TextSizes.Paragraph
-                            )
-                        },
+                        )
+                    },
                     value = username,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     onValueChange = { username = it }
