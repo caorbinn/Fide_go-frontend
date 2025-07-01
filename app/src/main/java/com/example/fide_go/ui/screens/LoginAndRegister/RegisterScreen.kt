@@ -172,8 +172,8 @@ fun RegisterScreen(
                         Text(
                             text = stringResource(R.string.nombre),
                             fontSize = TextSizes.Paragraph
-                            )
-                        },
+                        )
+                    },
                     value = username,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     onValueChange = { username = it }
@@ -281,7 +281,7 @@ private suspend fun signUp(
             username,
             Phone(null,phone,null,null),
             Email(null,email,null,null),
-            Profile(null,"","",null),
+            Profile(null,"","",null, 0),
             null
         )
 

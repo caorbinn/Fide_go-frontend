@@ -10,12 +10,17 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.fide_go.data.model.Offers
+import com.example.fide_go.navigation.AppScreen.AddBussinessScreen
+import com.example.fide_go.ui.screens.Bussiness.AddBussinessScreen
 import com.example.fide_go.ui.screens.Bussiness.BussinessScreen
+import com.example.fide_go.ui.screens.Scan.ScanQrScreen
 import com.example.fide_go.ui.screens.HomeScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.ForgotPasswordScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.LoginScreen
 import com.example.fide_go.ui.screens.LoginAndRegister.RegisterScreen
 import com.example.fide_go.ui.screens.Offers.OffersScreen
+import com.example.fide_go.ui.screens.Offers.EditOfferScreen
+import com.example.fide_go.ui.screens.Offers.RedeemOfferScreen
 import com.example.fide_go.ui.screens.EditProfileScreen
 /*
 import com.example.fide_go.ui.screens.Search.FindByEmailScreen
@@ -57,6 +62,7 @@ import com.example.fide_go.viewModel.EmailViewModel
 import com.example.fide_go.viewModel.OffersViewModel
 import com.example.fide_go.viewModel.PhonesViewModel
 import com.example.fide_go.viewModel.ProfileViewModel
+import com.example.fide_go.viewModel.PurchaseViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -70,7 +76,8 @@ fun AppNavigation(
     vmEmails: EmailViewModel,
     vmProfiles: ProfileViewModel,
     vmBussiness: BussinessViewModel,
-    vmOffers: OffersViewModel
+    vmOffers: OffersViewModel,
+    vmPurchase: PurchaseViewModel
 ) {
     //Aqui se maneja toda la navegacion entre nuestras pantallas
     //This handles all the navigation between our screens.
@@ -157,6 +164,57 @@ fun AppNavigation(
                 vmUsers = vmUsers,
                 vmOffers = vmOffers,
                 vmBussiness = vmBussiness
+            )
+        }
+
+        //para agregar negocios
+        composable(route=AppScreen.AddBussinessScreen.route){
+            AddBussinessScreen(
+                navController = navController,
+                auth = authManager,
+                onSignOutGoogle = onSignOutGoogle,
+                vmUsers = vmUsers,
+                vmBussiness = vmBussiness
+            )
+        }
+
+        composable(route=AppScreen.ScanQrScreen.route){
+            ScanQrScreen(
+                navController = navController,
+                auth = authManager,
+                vmUsers = vmUsers,
+                vmPurchase = vmPurchase
+            )
+        }
+
+        composable(
+            route = AppScreen.EditOfferScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ){ backStackEntry ->
+            val offerId = backStackEntry.arguments?.getString("id") ?: ""
+            EditOfferScreen(
+                navController = navController,
+                auth = authManager,
+                onSignOutGoogle = onSignOutGoogle,
+                vmUsers = vmUsers,
+                vmOffers = vmOffers,
+                vmBussiness = vmBussiness,
+                offerId = offerId
+            )
+        }
+
+        composable(
+            route = AppScreen.RedeemOfferScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ){ backStackEntry ->
+            val offerId = backStackEntry.arguments?.getString("id") ?: ""
+            RedeemOfferScreen(
+                navController = navController,
+                auth = authManager,
+                onSignOutGoogle = onSignOutGoogle,
+                vmUsers = vmUsers,
+                vmOffers = vmOffers,
+                offerId = offerId
             )
         }
         /*
@@ -394,6 +452,5 @@ fun AppNavigation(
                         vmProfiles=vmProfiles
                     )
                 }*/
-
     }
 }

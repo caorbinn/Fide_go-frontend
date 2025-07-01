@@ -1,6 +1,5 @@
 package com.example.fide_go.ui.screens.Bussiness
 
-import android.graphics.fonts.FontStyle
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
@@ -14,12 +13,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.*
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,9 +48,10 @@ import com.example.fide_go.ui.theme.AppColors
 import com.example.fide_go.ui.theme.TextSizes
 import com.example.fide_go.utils.AuthManager
 import com.example.fide_go.viewModel.BussinessViewModel
-import com.example.fide_go.viewModel.UsersViewModel
 import com.example.fide_go.viewModel.OffersViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fide_go.viewModel.UsersViewModel
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -63,6 +66,11 @@ fun BussinessScreen(
     businessId: String
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    // Estado para controlar la oferta seleccionada para borrado
+    var showDeleteDialogForOfferId by remember { mutableStateOf<String?>(null) }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     val currentUser = auth.getCurrentUser()
 
@@ -84,14 +92,47 @@ fun BussinessScreen(
     val business by vmBussiness.currentBussiness.collectAsState()
     val offers by vmOffers.offersByBusiness.collectAsState()
 
+    // ─── Construcción de User (pasando argumentos por posición) ───
     if (currentUser?.email != null) {
         val userToInsert = User(
-            null,
-            currentUser.displayName.orEmpty(),
-            Phone(null, currentUser.phoneNumber.orEmpty(), false, null),
-            Email(null, currentUser.email.orEmpty(), false, null),
-            Profile(null, "", currentUser.photoUrl.toString(), null),
-            null
+            /*   id    */      null,
+            /*username*/      currentUser.displayName.orEmpty(),
+
+            /*  Phone(id: String?, phone: String, verified: Boolean, userId: String?)  */
+            Phone(
+                null,
+                currentUser.phoneNumber.orEmpty(),
+                false,
+                null
+            ),
+
+            /*  Email(id: String?, email: String, verified: Boolean, userId: String?)  */
+            Email(
+                null,
+                currentUser.email.orEmpty(),
+                false,
+                null
+            ),
+
+            /*
+             *  Profile(
+             *    id: String?,
+             *    description: String,
+             *    urlImageProfile: String,
+             *    dateBirth: LocalDate?
+             *  )
+             *
+             *  Solo cuatro parámetros, en ese orden exacto.
+             */
+            Profile(
+                id               = null,
+                description      = "",                       // o algún texto por defecto
+                urlImageProfile  = currentUser.photoUrl.toString(),
+                dateBirth        = null,                     // si no tienes fecha de nacimiento aún
+                pointsUser       = 0                         // arrancamos con 0 puntos
+            ),
+
+            /* businessId */   null
         )
         LaunchedEffect(Unit) {
             vmUsers.insertUserVm(userToInsert)
@@ -106,7 +147,9 @@ fun BussinessScreen(
             popUpTo(AppScreen.HomeScreen.route) { inclusive = true }
         }
     }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.mainFide),
@@ -115,9 +158,9 @@ fun BussinessScreen(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        currentUser?.photoUrl?.toString()?.let {
-                            ClickableProfileImage(navController, it) { }
-                        }
+                        //currentUser?.photoUrl?.toString()?.let {
+                        //ClickableProfileImage(navController, it) { }
+                        //}
 
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
@@ -136,13 +179,21 @@ fun BussinessScreen(
                                 overflow = TextOverflow.Ellipsis,
                                 color = AppColors.whitePerlaFide
                             )
+
                         }
+
+                        Spacer(modifier = Modifier.width(100.dp))
+
+                        Text("Puntos: ${userState?.profile?.pointsUser ?: 0}",
+                            fontSize = TextSizes.Footer,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = AppColors.whitePerlaFide
+                        )
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        navController.navigate(AppScreen.HomeScreen.route)
-                    }) {
+                    IconButton(onClick = { navController.navigate(AppScreen.HomeScreen.route) }) {
                         Icon(Icons.Outlined.Home, contentDescription = "Home", tint = AppColors.whitePerlaFide)
                     }
                     IconButton(onClick = { showDialog = true }) {
@@ -177,6 +228,20 @@ fun BussinessScreen(
                     onDismiss = { showDialog = false }
                 )
             }
+            if (showDeleteDialogForOfferId != null) {
+                DeleteOfferDialog(
+                    onConfirm = {
+                        showDeleteDialogForOfferId?.let { id ->
+                            vmOffers.deleteOfferVM(id)
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Cupón eliminado correctamente")
+                            }
+                        }
+                        showDeleteDialogForOfferId = null
+                    },
+                    onDismiss = { showDeleteDialogForOfferId = null }
+                )
+            }
         }
 
         Box(
@@ -194,19 +259,35 @@ fun BussinessScreen(
                         .size(48.dp)
                 )
             } else {
-                BodyContentBusiness(navController, userState, business, offers)
+                BodyContentBusiness(
+                    navController = navController,
+                    userState = userState,
+                    business = business,
+                    offers = offers,
+                    vmOffers = vmOffers,
+                    // ─── Pasamos estado y callback ───
+                    showDeleteDialogForOfferId = showDeleteDialogForOfferId,
+                    onDeleteClick = { offerId ->
+                        showDeleteDialogForOfferId = offerId
+                    }
+                )
             }
         }
     }
 }
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BodyContentBusiness(
     navController: NavController,
     userState: User?,
     business: Bussiness?,
-    offers: List<Offers>
+    offers: List<Offers>,
+    vmOffers: OffersViewModel,
+
+    // ─── Nuevos parámetros que recibe este composable ───
+    showDeleteDialogForOfferId: String?,
+    onDeleteClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -243,68 +324,131 @@ fun BodyContentBusiness(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items(offers) { offer ->
-                    Card(
+                    // Asegúrate de envolver el Card en un Box con padding exterior
+// para que la sombra no se recorte. Solo copia y pega esto donde necesites:
+
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                // Navegar al detalle de la oferta si es necesario
-                                // navController.navigate("offerDetail/${offer.id}")
-                            },
-                        shape = RoundedCornerShape(12.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                            .padding(vertical = 16.dp) // espacio alrededor para la sombra
                     ) {
-                        Row(
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                // Altura mínima para que nunca se vea demasiado “apretado”
+                                .defaultMinSize(minHeight = 120.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
                         ) {
-                            // Imagen de la oferta
-                            AsyncImage(
-                                model = offer.urlImageOffer,
-                                contentDescription = "Imagen de la oferta",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(80.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-
-                            Spacer(modifier = Modifier.width(16.dp))
-
                             Column(
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White)
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.SpaceBetween // reparte contenido para que el texto largo baje
                             ) {
-                                // Título de la oferta
-                                Text(
-                                    text = offer.title,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                // Puntos en negrita y tamaño mayor
-                                Text(
-                                    text = "${offer.points ?: 0} puntos",
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
-                                // Opcional: descripción breve debajo
+                                // Fila superior: imagen + título + puntos
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    AsyncImage(
+                                        model = offer.urlImageOffer,
+                                        contentDescription = "Imagen de la oferta",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(80.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                    )
+
+                                    Spacer(modifier = Modifier.width(16.dp))
+
+                                    Column(
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Text(
+                                            text = offer.title,
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.Black,
+                                            maxLines = 3,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+
+                                        Spacer(modifier = Modifier.height(4.dp))
+
+                                        Text(
+                                            text = "${offer.points ?: 0} puntos",
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.Black
+                                        )
+                                    }
+                                }
+
+                                // Descripción (si existe), limitada a 2 líneas
                                 offer.description?.let { desc ->
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
                                         text = desc,
                                         fontSize = 14.sp,
                                         color = Color.Gray,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis
+                                        maxLines = 3,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.fillMaxWidth()
                                     )
+                                }
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                // Botones al pie del Card
+                                if (userState?.admin == true) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Button(
+                                            onClick = {
+                                                offer.id?.let { vmOffers.saveOfferEditVM(it) }
+                                                offer.id?.let {
+                                                    navController.navigate(
+                                                        AppScreen.EditOfferScreen.createRoute(it)
+                                                    )
+                                                }
+                                            },
+                                            modifier = Modifier.weight(1f),
+                                            contentPadding = PaddingValues(4.dp)
+                                        ) {
+                                            Text("Editar")
+                                        }
+
+                                        Button(
+                                            onClick = { offer.id?.let { onDeleteClick(it) } },
+                                            modifier = Modifier.weight(1f),
+                                            contentPadding = PaddingValues(4.dp)
+                                        ) {
+                                            Text("Eliminar")
+                                        }
+                                    }
+                                } else {
+                                    Button(
+                                        onClick = {
+                                            offer.id?.let {
+                                                navController.navigate(
+                                                    AppScreen.RedeemOfferScreen.createRoute(it)
+                                                )
+                                            }
+                                        },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentPadding = PaddingValues(4.dp)
+                                    ) {
+                                        Text("Abrir Cupón")
+                                    }
                                 }
                             }
                         }
                     }
+
                 }
             }
         } else {
@@ -316,8 +460,6 @@ fun BodyContentBusiness(
         }
     }
 }
-
-
 
 @Composable
 fun LogoutDialog(
@@ -344,6 +486,35 @@ fun LogoutDialog(
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = AppColors.FocusFide)
             ) {
                 Text(stringResource(R.string.cancelar))
+            }
+        }
+    )
+}
+
+@Composable
+fun DeleteOfferDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        containerColor = AppColors.whitePerlaFide,
+        onDismissRequest = onDismiss,
+        title = { Text("¿Está seguro de eliminar cupón?", color = AppColors.mainFide) },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide)
+            ) {
+                Text("Sí", color = AppColors.whitePerlaFide)
+            }
+        },
+        dismissButton = {
+            OutlinedButton(
+                onClick = onDismiss,
+                border = BorderStroke(1.dp, AppColors.FocusFide),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = AppColors.FocusFide)
+            ) {
+                Text("No")
             }
         }
     )

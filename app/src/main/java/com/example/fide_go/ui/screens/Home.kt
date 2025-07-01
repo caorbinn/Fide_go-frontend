@@ -67,7 +67,7 @@ fun HomeScreen(
             currentUser.displayName.orEmpty(),
             Phone(null, currentUser.phoneNumber.orEmpty(), false, null),
             Email(null, currentUser.email.orEmpty(), false, null),
-            Profile(null, "", currentUser.photoUrl.toString(), null),
+            Profile(null, "", currentUser.photoUrl.toString(),null, 0),
             null // manteniendo todo igual, se asume false por defecto o según backend
         )
         LaunchedEffect(Unit) {
@@ -93,9 +93,9 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        currentUser?.photoUrl?.toString()?.let {
-                            ClickableProfileImage(navController, it) { }
-                        }
+                        //currentUser?.photoUrl?.toString()?.let {
+                        //ClickableProfileImage(navController, it) { }
+                        //}
 
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
@@ -114,7 +114,17 @@ fun HomeScreen(
                                 overflow = TextOverflow.Ellipsis,
                                 color = AppColors.whitePerlaFide
                             )
+
                         }
+
+                        Spacer(modifier = Modifier.width(100.dp))
+
+                        Text("Puntos: ${userState?.profile?.pointsUser ?: 0}",
+                            fontSize = TextSizes.Footer,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = AppColors.whitePerlaFide
+                        )
                     }
                 },
                 actions = {
@@ -208,7 +218,7 @@ fun BodyContentHome(
         if (userState?.admin == true) {
             Button(
                 onClick = {
-                    // Navegar a la pantalla de edición de ofertas
+                    // Navegar a la pantalla de creacion de ofertas
                     navController.navigate(AppScreen.OffersScreen.route)
                 },
                 modifier = Modifier
@@ -219,13 +229,52 @@ fun BodyContentHome(
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide)
             ) {
                 Text(
-                    text = "Editar ofertas",
+                    text = "Crear ofertas",
                     color = AppColors.whitePerlaFide,
                     style = MaterialTheme.typography.titleMedium
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
+
+
+        //boton para crear negocios
+        Button(
+            onClick = {
+                navController.navigate(AppScreen.AddBussinessScreen.route)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide),
+        ) {
+            Text(
+                text = "Agregar negocio",
+                color = AppColors.whitePerlaFide,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { navController.navigate(AppScreen.ScanQrScreen.route) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.FocusFide)
+        ) {
+            Text(
+                text = "Escanear QR",
+                color = AppColors.whitePerlaFide,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
         // Botón para editar el perfil del usuario
         Button(
             onClick = { navController.navigate(AppScreen.EditProfileScreen.route) },
@@ -381,7 +430,12 @@ fun LogoutDialog(
         containerColor = AppColors.whitePerlaFide,
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.cerrar_sesi_n), color = AppColors.mainFide) },
-        text = { Text(stringResource(R.string.est_s_seguro_que_deseas_cerrar_sesi_n), color = AppColors.mainFide) },
+        text = {
+            Text(
+                stringResource(R.string.est_s_seguro_que_deseas_cerrar_sesi_n),
+                color = AppColors.mainFide
+            )
+        },
         confirmButton = {
             Button(
                 onClick = onConfirmLogout,

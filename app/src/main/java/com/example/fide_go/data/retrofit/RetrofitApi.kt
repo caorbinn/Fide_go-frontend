@@ -15,6 +15,9 @@ import java.util.concurrent.TimeUnit
 object RetrofitApi {
     private const val BASE_URL = "https://dkhmzp0m-8000.uks1.devtunnels.ms/" // IMPORTANTE: ajustar según tu entorno
 
+    //https://dkhmzp0m-8000.uks1.devtunnels.ms/
+    //https://5682st0t-8000.uks1.devtunnels.ms/
+
     // Configurar OkHttpClient con tiempos de espera personalizados
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)  // Tiempo de espera de conexión
@@ -46,5 +49,5 @@ object RetrofitApi {
     val bussinessService: BussinessService by lazy { retrofit.create(BussinessService::class.java) }
     val offersService: OffersService by lazy { retrofit.create(OffersService::class.java) }
     val imageService: ImageService by lazy { retrofit.create(ImageService::class.java) }
+    val purchaseService: PurchaseService by lazy { retrofit.create(PurchaseService::class.java) }
 }
-

@@ -179,30 +179,30 @@ fun FormularioLogin(
 
     if(showPermissionDialog){
         AlertDialog(
-                onDismissRequest = { showPermissionDialog = false },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                            val uri = Uri.fromParts("package", context.packageName, null)
-                            intent.data = uri
-                            context.startActivity(intent)
+            onDismissRequest = { showPermissionDialog = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        val uri = Uri.fromParts("package", context.packageName, null)
+                        intent.data = uri
+                        context.startActivity(intent)
 
-                            showPermissionDialog = false
-                            firstTimePreference.setFirstTime(false)
-                        }
-                    ) {
-                        Text(stringResource(R.string.ir_a_ajustes))
+                        showPermissionDialog = false
+                        firstTimePreference.setFirstTime(false)
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showPermissionDialog = false }) {
-                        Text("cancelar")
-                    }
-                },
-                title = { Text("permisos requeridos") },
-                text = { Text("los_permisos_de_c_mara_y_notificaciones_son_necesarios_para_el_correcto_funcionamiento_de_la_aplicaci_n_por_favor_habilite_estos_permisos_en_la_configuraci_n_de_la_aplicaci_n") }
-            )
+                ) {
+                    Text(stringResource(R.string.ir_a_ajustes))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPermissionDialog = false }) {
+                    Text("cancelar")
+                }
+            },
+            title = { Text("permisos requeridos") },
+            text = { Text("los_permisos_de_c_mara_y_notificaciones_son_necesarios_para_el_correcto_funcionamiento_de_la_aplicaci_n_por_favor_habilite_estos_permisos_en_la_configuraci_n_de_la_aplicaci_n") }
+        )
     }
 
     Column(
@@ -269,7 +269,7 @@ fun FormularioLogin(
             text = AnnotatedString("has olvidado tu contraseña"),
             modifier = Modifier.padding(vertical = 8.dp),
             onClick = {
-                    navController.navigate(route = AppScreen.ForgotPasswordScreen.route)
+                navController.navigate(route = AppScreen.ForgotPasswordScreen.route)
             },
             style = TextStyle(
                 fontSize = TextSizes.Paragraph,
